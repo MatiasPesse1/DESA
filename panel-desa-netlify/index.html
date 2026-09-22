@@ -150,7 +150,7 @@
   .card .sub{font-size:12px;color:var(--text-muted);margin:0 0 14px;}
 
   /* kpi grid */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
   .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;}
   .kpi .label{font-size:12px;color:var(--text-muted);}
   .kpi .value{font-size:24px;font-weight:600;font-family:"IBM Plex Mono",monospace;letter-spacing:-0.01em;}
@@ -279,11 +279,10 @@
   footer{text-align:center;font-size:11.5px;color:var(--text-muted);padding-top:6px;}
 
   @media (max-width:820px){
-    .kpis{grid-template-columns:repeat(2,1fr);}
+    .kpis{grid-template-columns:1fr;}
     .grid2, .grid2b{grid-template-columns:1fr;}
   }
   @media (max-width:520px){
-    .kpis{grid-template-columns:1fr 1fr;}
     h1{font-size:19px;}
   }
 </style>
@@ -314,102 +313,26 @@
     <div class="card-head">
       <div>
         <h2>Ventas mensuales · 2025 vs 2026</h2>
-        <p class="sub" id="trendSub">Comparación mes a mes</p>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span class="chip flat" id="momChip">—</span>
-        <div class="mini-toggle" id="unitToggle">
-          <button data-unit="venta" class="active">Venta ($)</button>
-          <button data-unit="c9l">C9L</button>
-        </div>
+        <p class="sub" id="trendSub">Comparación mes a mes, en cajas de 9 litros (C9L)</p>
       </div>
     </div>
-    <div class="chart-wrap">
-      <svg class="chart" id="trendChart" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg>
-      <div class="tooltip" id="trendTooltip"></div>
-    </div>
-    <div class="legend" id="trendLegend"></div>
-  </section>
-
-  <section class="grid2b">
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Acumulado del año (YTD)</h2>
-          <p class="sub" id="ytdSub">Enero a agosto, vs mismo período 2025</p>
-        </div>
+    <div style="display:flex;gap:18px;align-items:stretch;flex-wrap:wrap;">
+      <div class="chart-wrap" style="flex:3 1 420px;min-width:280px;">
+        <svg class="chart" id="trendChart" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="tooltip" id="trendTooltip"></div>
+        <div class="legend" id="trendLegend"></div>
       </div>
-      <div id="ytdBody"></div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2 id="yoyTitle">Agosto 2025 vs Agosto 2026</h2>
-          <p class="sub">Cierre de mes, comparación interanual</p>
-        </div>
+      <div style="flex:1 1 150px;min-width:150px;border-left:1px solid var(--border);padding-left:18px;display:flex;flex-direction:column;justify-content:center;">
+        <div id="trendAccum"></div>
       </div>
-      <div class="chart-wrap">
-        <svg class="chart" id="yoyChart" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet"></svg>
-      </div>
-      <div id="yoySummary" style="margin-top:8px;"></div>
-    </div>
-  </section>
-
-  <section class="grid2b">
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Top productos</h2>
-          <p class="sub">Mayor venta acumulada 2025–2026</p>
-        </div>
-      </div>
-      <div class="table-scroll">
-        <table id="topProductsTable"></table>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Productos más bajos</h2>
-          <p class="sub">Menor venta acumulada (con movimiento)</p>
-        </div>
-      </div>
-      <div class="table-scroll">
-        <table id="bottomProductsTable"></table>
-      </div>
-    </div>
-  </section>
-
-  <section class="grid2b">
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Regiones con más movimiento</h2>
-          <p class="sub" id="regionTopSub">Venta acumulada por zona</p>
-        </div>
-        <div class="mini-toggle" id="regionToggle">
-          <button data-view="ciudad" class="active">Ciudad</button>
-          <button data-view="bodega">Bodega</button>
-        </div>
-      </div>
-      <div class="barlist" id="regionTopList"></div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Regiones con menos movimiento</h2>
-          <p class="sub">Entre las zonas con venta registrada</p>
-        </div>
-      </div>
-      <div class="barlist" id="regionBottomList"></div>
     </div>
   </section>
 
   <section class="card">
     <div class="card-head">
       <div>
-        <h2>Ventas por canal</h2>
-        <p class="sub">On trade vs off trade</p>
+        <h2>Ventas por subcanal</h2>
+        <p class="sub">En cajas de 9 litros (C9L)</p>
       </div>
     </div>
     <div class="barlist" id="canalList"></div>
@@ -418,8 +341,11 @@
   <section class="card">
     <div class="card-head">
       <div>
-        <h2>Ventas por SKU y canal</h2>
-        <p class="sub" id="skuCanalSub">Seleccioná uno o varios meses para comparar contra el mismo período del año anterior</p>
+        <h2>Ventas por SKU y subcanal</h2>
+        <p class="sub" id="skuCanalSub">Seleccioná uno o varios meses para comparar contra el mismo período del año anterior, en C9L</p>
+      </div>
+      <div class="filters-row">
+        <select class="select-control" id="skuSubcanalSelect"><option value="TODOS">Todos los subcanales</option></select>
       </div>
     </div>
     <div class="month-picker" id="skuMonthPicker"></div>
@@ -432,15 +358,11 @@
     <div class="card-head">
       <div>
         <h2>Clientes caídos</h2>
-        <p class="sub" id="clientesSub">Comparación de compra de un mismo mes, año contra año</p>
+        <p class="sub" id="clientesSub">Comparación de compra de un mismo mes, año contra año, en C9L</p>
       </div>
       <div class="filters-row">
         <select class="select-control" id="clientesMonthSelect"></select>
-        <select class="select-control" id="clientesCanalSelect">
-          <option value="TODOS">Todos los canales</option>
-          <option value="ON TRADE">On trade</option>
-          <option value="OFF TRADE">Off trade</option>
-        </select>
+        <select class="select-control" id="clientesCanalSelect"><option value="TODOS">Todos los subcanales</option></select>
       </div>
     </div>
     <div class="table-scroll">
@@ -518,7 +440,7 @@
 <script>
 (function(){
   var DATA = null;
-  var state = { brand: null, view: 'volumenes', regionView: 'ciudad', unit: 'venta', skuMonths: [], clientesMonth: null, clientesCanal: 'TODOS', invBodega: 'TODAS', invNivel: 'TODOS' };
+  var state = { brand: null, view: 'volumenes', skuMonths: [], skuSubcanal: 'TODOS', clientesMonth: null, clientesCanal: 'TODOS', invBodega: 'TODAS', invNivel: 'TODOS' };
   var TRAN_LABELS = {
     'TRAN-VIÑA': 'Viña del Mar', 'TRAN-PUNTA ARENA': 'Punta Arenas', 'TRAN-PTOMONTT': 'Puerto Montt',
     'TRAN-TEMUCO': 'Temuco', 'TRAN-SERENA': 'La Serena', 'TRAN-COPIAPO': 'Copiapó', 'TRAN-ARICA': 'Arica',
@@ -571,6 +493,7 @@
     buildBrandSeg();
     buildViewSeg();
     buildMonthPicker();
+    buildSkuSubcanalSelect();
     buildClientesControls();
     buildInvControls();
     render();
@@ -644,20 +567,6 @@
     }
     return (DATA.monthly[brand]||[]).slice().sort(function(a,b){ return (a.anio*12+a.mes)-(b.anio*12+b.mes); });
   }
-  function getList(section, brand){
-    if (brand === 'AMBAS'){
-      var map = {}, order = [];
-      ['STOLICHNAYA','BUHERO NEGRO'].forEach(function(m){
-        (DATA[section][m]||[]).forEach(function(r){
-          var key = section==='products' ? r.producto : (section==='ciudad' ? r.ciudad : (section==='bodega'? r.bodega : r.canal));
-          if(!map[key]){ map[key] = Object.assign({}, r); map[key].venta=0; map[key].litros=0; map[key].c9l=0; order.push(key); }
-          map[key].venta += r.venta; map[key].litros += r.litros || 0; map[key].c9l += r.c9l || 0;
-        });
-      });
-      return order.map(function(k){return map[k];}).sort(function(a,b){return b.venta-a.venta;});
-    }
-    return (DATA[section][brand]||[]).slice().sort(function(a,b){return b.venta-a.venta;});
-  }
   function getYTD(brand){
     if (!DATA.ytd) return null;
     if (brand === 'AMBAS'){
@@ -695,10 +604,6 @@
     var monthly = getMonthly(state.brand);
     renderKPIs(monthly);
     renderTrend(monthly, meta);
-    renderYTD(meta);
-    renderYoY(monthly, meta);
-    renderProducts();
-    renderRegions();
     renderCanal(meta);
     renderSkuCanal(meta);
     renderClientes(meta);
@@ -913,15 +818,16 @@
     var mPrev = mClosed ? findMonth(monthly, closed.mes===1?closed.anio-1:closed.anio, closed.mes===1?12:closed.mes-1) : null;
     var mYoY = mClosed ? findMonth(monthly, closed.anio-1, closed.mes) : null;
     var mPartial = findMonth(monthly, partial.anio, partial.mes);
-    var skuCount = getList('products', state.brand).filter(function(p){return p.venta>0;}).length;
+    var mPartialYoY = findMonth(monthly, partial.anio-1, partial.mes);
 
-    var mom = (mClosed && mPrev) ? ((mClosed.venta - mPrev.venta) / mPrev.venta * 100) : null;
-    var yoy = (mClosed && mYoY) ? ((mClosed.venta - mYoY.venta) / mYoY.venta * 100) : null;
+    var mom = (mClosed && mPrev && mPrev.c9l) ? ((mClosed.c9l - mPrev.c9l) / mPrev.c9l * 100) : null;
+    var yoy = (mClosed && mYoY && mYoY.c9l) ? ((mClosed.c9l - mYoY.c9l) / mYoY.c9l * 100) : null;
+    var yoyPartial = (mPartial && mPartialYoY && mPartialYoY.c9l) ? ((mPartial.c9l - mPartialYoY.c9l) / mPartialYoY.c9l * 100) : null;
 
     var cards = [
       {
         label: closed.nombre + ' (mes cerrado)',
-        value: mClosed ? fmtCLP(mClosed.venta) : '— sin datos',
+        value: mClosed ? fmtC9L(mClosed.c9l) : '— sin datos',
         chip: mom===null ? null : (mom>=0.05?'up':(mom<-0.05?'down':'flat')),
         chipText: mom===null ? 'Sin mes anterior' : (fmtPct(mom) + ' vs mes anterior'),
       },
@@ -929,19 +835,13 @@
         label: 'vs ' + closed.nombre.replace('2026','2025'),
         value: yoy===null ? 'Sin dato 2025' : fmtPct(yoy),
         chip: yoy===null ? null : (yoy>=0.05?'up':(yoy<-0.05?'down':'flat')),
-        chipText: mYoY ? ('2025: ' + fmtCLP(mYoY.venta)) : 'Marca sin historial 2025',
+        chipText: mYoY ? (fmtC9L(mClosed.c9l) + ' vs ' + fmtC9L(mYoY.c9l) + ' (2025)') : 'Marca sin historial 2025',
       },
       {
-        label: 'C9L · ' + closed.nombre,
-        value: mClosed ? fmtC9L(mClosed.c9l) : '—',
-        chip: null,
-        chipText: partial.nombre + ' (parcial): ' + (mPartial? fmtC9L(mPartial.c9l) : '—'),
-      },
-      {
-        label: 'SKUs con venta registrada',
-        value: skuCount,
-        chip: null,
-        chipText: partial.nombre + ' parcial al ' + partial.asof.slice(8,10) + '/' + partial.asof.slice(5,7),
+        label: 'Lo que va de ' + partial.nombre,
+        value: mPartial ? fmtC9L(mPartial.c9l) : '—',
+        chip: yoyPartial===null ? null : (yoyPartial>=0.05?'up':(yoyPartial<-0.05?'down':'flat')),
+        chipText: yoyPartial===null ? ('Al ' + partial.asof.slice(8,10) + '/' + partial.asof.slice(5,7)) : (fmtPct(yoyPartial) + ' vs ' + partial.nombre.split(' ')[0] + ' ' + (partial.anio-1)),
       },
     ];
 
@@ -960,23 +860,22 @@
     var svg = document.getElementById('trendChart');
     var W = 640, H = 260, padL = 44, padR = 12, padT = 14, padB = 26;
     var months = DATA.meses;
-    var unit = state.unit; // 'venta' or 'c9l'
+    var unit = 'c9l';
     var series25 = months.map(function(_,i){ var m = findMonth(monthly, 2025, i+1); return m ? m[unit] : null; });
     var series26 = months.map(function(_,i){ var m = findMonth(monthly, 2026, i+1); return m ? m[unit] : null; });
 
-    // MoM chip for the last closed month, in the currently selected unit
-    var closed = DATA.meta.last_closed;
-    var mClosed = findMonth(monthly, closed.anio, closed.mes);
-    var mPrev = mClosed ? findMonth(monthly, closed.mes===1?closed.anio-1:closed.anio, closed.mes===1?12:closed.mes-1) : null;
-    var momChip = document.getElementById('momChip');
-    if (mClosed && mPrev && mPrev[unit]){
-      var momPct = (mClosed[unit]-mPrev[unit])/mPrev[unit]*100;
-      var cls = momPct>=0.05?'up':(momPct<-0.05?'down':'flat');
-      momChip.className = 'chip '+cls;
-      momChip.textContent = (cls==='up'?'▲':cls==='down'?'▼':'—') + ' ' + fmtPct(momPct) + ' vs mes anterior';
+    // accumulated (YTD) side panel, next to the chart
+    var y = getYTD(state.brand);
+    var accumEl = document.getElementById('trendAccum');
+    if (!y){
+      accumEl.innerHTML = '<span style="font-size:12px;color:var(--text-muted);">Sin datos suficientes.</span>';
     } else {
-      momChip.className = 'chip flat';
-      momChip.textContent = 'Sin mes anterior para comparar';
+      var cCls = y.c9l_var_pct===null ? 'flat' : (y.c9l_var_pct>=0.05?'up':(y.c9l_var_pct<-0.05?'down':'flat'));
+      accumEl.innerHTML =
+        '<span style="font-size:12px;color:var(--text-muted);">Acumulado '+y.anio_actual+' (ene–'+y.hasta_mes.toLowerCase()+')</span>' +
+        '<div style="font-size:22px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;margin:4px 0 6px;">'+fmtC9L(y.c9l_actual)+'</div>' +
+        '<span class="chip '+cCls+'">'+(cCls==='up'?'▲':cCls==='down'?'▼':'—')+' '+fmtPct(y.c9l_var_pct)+' vs '+(y.anio_actual-1)+'</span>' +
+        '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;">'+(y.anio_actual-1)+': '+fmtC9L(y.c9l_anterior)+'</div>';
     }
 
     var allVals = series25.concat(series26).filter(function(v){return v!==null;});
@@ -1050,9 +949,16 @@
         var year = +dot.dataset.year, mi = +dot.dataset.month;
         var m = findMonth(monthly, year, mi+1);
         if(!m) return;
+        var mOther = findMonth(monthly, year===2026?2025:2026, mi+1);
+        var varRow = '';
+        if (mOther && mOther.c9l){
+          var vp = (year===2026)
+            ? (m.c9l-mOther.c9l)/mOther.c9l*100
+            : (mOther.c9l-m.c9l)/m.c9l*100;
+          varRow = '<div class="t-row"><span>Var% vs '+(year===2026?2025:2026)+'</span><span class="num">'+fmtPct(vp)+'</span></div>';
+        }
         tooltip.innerHTML = '<div class="t-title">'+m.mes_nombre+' '+year+'</div>' +
-          '<div class="t-row"><span>Venta</span><span class="num">'+fmtCLP(m.venta)+'</span></div>' +
-          '<div class="t-row"><span>C9L</span><span class="num">'+fmtC9L(m.c9l)+'</span></div>';
+          '<div class="t-row"><span>C9L</span><span class="num">'+fmtC9L(m.c9l)+'</span></div>' + varRow;
         var rect = dot.getBoundingClientRect();
         var wrapRect = svg.parentElement.getBoundingClientRect();
         tooltip.style.left = (rect.left - wrapRect.left + rect.width/2) + 'px';
@@ -1063,7 +969,7 @@
     });
 
     var sub = document.getElementById('trendSub');
-    sub.textContent = has2025 ? 'Comparación mes a mes en pesos (CLP)' : 'Marca con historial desde agosto 2026 — se construye mes a mes';
+    sub.textContent = has2025 ? 'Comparación mes a mes en cajas de 9 litros (C9L)' : 'Marca con historial desde agosto 2026 — se construye mes a mes';
   }
 
   function shortNum(v){
@@ -1073,144 +979,34 @@
     return Math.round(v);
   }
 
-  function renderYTD(meta){
-    var y = getYTD(state.brand);
-    var body = document.getElementById('ytdBody');
-    var sub = document.getElementById('ytdSub');
-    if (!y){
-      sub.textContent = 'Sin datos suficientes.';
-      body.innerHTML = '';
-      return;
-    }
-    sub.textContent = 'Enero a ' + y.hasta_mes.toLowerCase() + ', vs mismo período ' + (y.anio_actual-1);
-    var vCls = y.venta_var_pct===null ? 'flat' : (y.venta_var_pct>=0.05?'up':(y.venta_var_pct<-0.05?'down':'flat'));
-    var cCls = y.c9l_var_pct===null ? 'flat' : (y.c9l_var_pct>=0.05?'up':(y.c9l_var_pct<-0.05?'down':'flat'));
-    body.innerHTML =
-      '<div style="display:flex;flex-direction:column;gap:14px;">' +
-        '<div>' +
-          '<span class="label" style="font-size:12px;color:var(--text-muted);">Venta acumulada '+y.anio_actual+'</span>' +
-          '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px;">' +
-            '<span class="value" style="font-size:22px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(y.venta_actual)+'</span>' +
-            '<span class="chip '+vCls+'">'+(vCls==='up'?'▲':vCls==='down'?'▼':'—')+' '+fmtPct(y.venta_var_pct)+'</span>' +
-          '</div>' +
-          '<span style="font-size:11.5px;color:var(--text-muted);">'+(y.anio_actual-1)+': '+fmtCLP(y.venta_anterior)+'</span>' +
-        '</div>' +
-        '<div>' +
-          '<span class="label" style="font-size:12px;color:var(--text-muted);">C9L acumulados '+y.anio_actual+'</span>' +
-          '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px;">' +
-            '<span class="value" style="font-size:22px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;">'+fmtC9L(y.c9l_actual)+'</span>' +
-            '<span class="chip '+cCls+'">'+(cCls==='up'?'▲':cCls==='down'?'▼':'—')+' '+fmtPct(y.c9l_var_pct)+'</span>' +
-          '</div>' +
-          '<span style="font-size:11.5px;color:var(--text-muted);">'+(y.anio_actual-1)+': '+fmtC9L(y.c9l_anterior)+'</span>' +
-        '</div>' +
-      '</div>';
-  }
-
-  function renderYoY(monthly, meta){
-    var closed = DATA.meta.last_closed;
-    var mesName = closed.nombre.split(' ')[0];
-    document.getElementById('yoyTitle').textContent = mesName + ' ' + (closed.anio-1) + ' vs ' + mesName + ' ' + closed.anio;
-    var m26 = findMonth(monthly, closed.anio, closed.mes);
-    var m25 = findMonth(monthly, closed.anio-1, closed.mes);
-    var svg = document.getElementById('yoyChart');
-    var W=300,H=200, padL=50, padR=20, padT=14, padB=26;
-    var innerW=W-padL-padR, innerH=H-padT-padB;
-    var vals = [m25?m25.venta:0, m26?m26.venta:0];
-    var maxV = Math.max.apply(null, vals) * 1.15 || 1;
-    var bw = innerW/2*0.5;
-    function y(v){ return padT+innerH-(v/maxV)*innerH; }
-    var parts = [];
-    parts.push('<line class="baseline" x1="'+padL+'" x2="'+(W-padR)+'" y1="'+(padT+innerH)+'" y2="'+(padT+innerH)+'"/>');
-    var labels = ['2025','2026'];
-    var colors = [resolveVar('var(--text-muted)'), resolveVar(meta.color)];
-    [vals[0], vals[1]].forEach(function(v, i){
-      var cx = padL + innerW*0.28 + i*innerW*0.44;
-      var h = (v/maxV)*innerH;
-      var yy = padT+innerH-h;
-      parts.push('<rect x="'+(cx-bw/2)+'" y="'+yy+'" width="'+bw+'" height="'+h+'" rx="4" fill="'+colors[i]+'"'+(i===0?' opacity="0.55"':'')+'/>');
-      parts.push('<text class="axislabel" x="'+cx+'" y="'+(padT+innerH+16)+'" text-anchor="middle">'+labels[i]+'</text>');
-      parts.push('<text x="'+cx+'" y="'+(yy-8)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--text-primary)">'+shortNum(v)+'</text>');
-    });
-    svg.setAttribute('viewBox','0 0 '+W+' '+H);
-    svg.innerHTML = parts.join('');
-
-    var summary = document.getElementById('yoySummary');
-    if (m25 && m26){
-      var delta = (m26.venta - m25.venta)/m25.venta*100;
-      var cls = delta>=0.05?'up':(delta<-0.05?'down':'flat');
-      summary.innerHTML = '<span class="chip '+cls+'">'+(cls==='up'?'▲':cls==='down'?'▼':'—')+' '+fmtPct(delta)+'</span> <span style="font-size:12px;color:var(--text-muted);margin-left:6px;">'+fmtCLP(m25.venta)+' → '+fmtCLP(m26.venta)+'</span>';
-    } else {
-      summary.innerHTML = '<span class="note" style="color:var(--text-muted);font-size:12px;">Sin datos de agosto 2025 para esta marca — no hay base de comparación.</span>';
-    }
-  }
-
-  function renderProducts(){
-    var prods = getList('products', state.brand).filter(function(p){return p.venta>0;});
-    var total = prods.reduce(function(a,p){return a+p.venta;},0) || 1;
-    var top = prods.slice(0,8);
-    var bottom = prods.slice(-5).reverse();
-
-    function buildTable(rows, el){
-      var html = '<thead><tr><th>Producto</th><th class="num">Venta</th><th class="num">C9L</th><th class="num">% part.</th></tr></thead><tbody>';
-      rows.forEach(function(p, i){
-        html += '<tr><td class="name"><span class="rank-badge">'+(i+1)+'</span>'+(p.glosa||p.producto)+'<span class="prod-code">'+p.producto+'</span></td>' +
-          '<td class="num">'+fmtCLP(p.venta)+'</td><td class="num">'+fmtC9L(p.c9l)+'</td><td class="num">'+(p.venta/total*100).toFixed(1)+'%</td></tr>';
+  function getSubcanal(brand){
+    if (!DATA.subcanal) return [];
+    if (brand === 'AMBAS'){
+      var map = {}, order = [];
+      ['STOLICHNAYA','BUHERO NEGRO'].forEach(function(m){
+        (DATA.subcanal[m]||[]).forEach(function(r){
+          if(!map[r.subcanal]){ map[r.subcanal] = {subcanal:r.subcanal, venta:0, litros:0, c9l:0, cantidad:0}; order.push(r.subcanal); }
+          map[r.subcanal].venta += r.venta; map[r.subcanal].litros += r.litros; map[r.subcanal].c9l += r.c9l; map[r.subcanal].cantidad += r.cantidad;
+        });
       });
-      html += '</tbody>';
-      el.innerHTML = html;
+      return order.map(function(k){return map[k];});
     }
-    buildTable(top, document.getElementById('topProductsTable'));
-    if (bottom.length && bottom[0] !== top[0]){
-      buildTable(bottom, document.getElementById('bottomProductsTable'));
-    } else if (prods.length <= 8) {
-      document.getElementById('bottomProductsTable').innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Con pocos SKUs activos, el ranking coincide con el top de productos.</td></tr></tbody>';
-    } else {
-      buildTable(bottom, document.getElementById('bottomProductsTable'));
-    }
-  }
-
-  function renderRegions(){
-    var section = state.regionView; // 'ciudad' or 'bodega'
-    var list = getList(section, state.brand).filter(function(r){return r.venta>0;});
-    var total = list.reduce(function(a,r){return a+r.venta;},0) || 1;
-    var top = list.slice(0,6);
-    var bottom = list.slice(-6).reverse();
-    var accent = resolveVar(BRAND_META[state.brand].color);
-
-    function buildBars(rows, el, muted){
-      el.innerHTML = '';
-      rows.forEach(function(r){
-        var name = section==='ciudad' ? r.ciudad : r.bodega;
-        var pct = (r.venta/total*100);
-        var row = document.createElement('div');
-        row.className = 'bar-row';
-        row.innerHTML = '<span class="label">'+name+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(r.venta)+'</span>' +
-          '<div class="bar-track"><div class="bar-fill" style="width:'+Math.max(pct,1.5)+'%;background:'+(muted?'var(--text-muted)':accent)+';opacity:'+(muted?'0.55':'1')+'"></div></div>' +
-          '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtC9L(r.c9l)+'</span></div>';
-        el.appendChild(row);
-      });
-      if (!rows.length){
-        el.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px;">Sin datos suficientes.</p>';
-      }
-    }
-    buildBars(top, document.getElementById('regionTopList'), false);
-    buildBars(bottom, document.getElementById('regionBottomList'), true);
-    document.getElementById('regionTopSub').textContent = 'Venta acumulada por ' + (section==='ciudad'?'ciudad':'bodega/local DESA');
+    return DATA.subcanal[brand] || [];
   }
 
   function renderCanal(meta){
-    var list = getList('canal', state.brand).filter(function(c){return c.venta>0;}).sort(function(a,b){return b.venta-a.venta;});
-    var total = list.reduce(function(a,c){return a+c.venta;},0) || 1;
+    var list = getSubcanal(state.brand).filter(function(c){return c.c9l>0;}).sort(function(a,b){return b.c9l-a.c9l;});
+    var total = list.reduce(function(a,c){return a+c.c9l;},0) || 1;
     var el = document.getElementById('canalList');
     el.innerHTML = '';
     var accent = resolveVar(meta.color);
     list.forEach(function(c, i){
-      var pct = c.venta/total*100;
+      var pct = c.c9l/total*100;
       var row = document.createElement('div');
       row.className = 'bar-row';
-      row.innerHTML = '<span class="label">'+c.canal+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(c.venta)+'</span>' +
+      row.innerHTML = '<span class="label">'+c.subcanal+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+fmtC9L(c.c9l)+'</span>' +
         '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+(i===0?accent:'var(--text-muted)')+'"></div></div>' +
-        '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtC9L(c.c9l)+'</span></div>';
+        '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span></div>';
       el.appendChild(row);
     });
     if (!list.length){
@@ -1218,13 +1014,21 @@
     }
   }
 
-  // ---------- SKU x Canal ----------
+  // ---------- SKU x Subcanal ----------
+  var SUBCANALES = ['HOUSEBAR','ECOMMERCE','IMPULSO','MAYORISTA','MODULO','ON PREMISE','OTROS','MODERNO','TRADICIONAL'];
+
+  function buildSkuSubcanalSelect(){
+    var sel = document.getElementById('skuSubcanalSelect');
+    sel.innerHTML = '<option value="TODOS">Todos los subcanales</option>' + SUBCANALES.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
+    sel.addEventListener('change', function(){ state.skuSubcanal = sel.value; renderSkuCanal(BRAND_META[state.brand]); });
+  }
+
   function getSkuCanal(brand){
-    if (!DATA.sku_canal) return [];
+    if (!DATA.sku_subcanal) return [];
     if (brand === 'AMBAS'){
-      return ['STOLICHNAYA','BUHERO NEGRO'].reduce(function(acc,m){ return acc.concat(DATA.sku_canal[m]||[]); }, []);
+      return ['STOLICHNAYA','BUHERO NEGRO'].reduce(function(acc,m){ return acc.concat(DATA.sku_subcanal[m]||[]); }, []);
     }
-    return DATA.sku_canal[brand] || [];
+    return DATA.sku_subcanal[brand] || [];
   }
 
   function buildMonthPicker(){
@@ -1263,6 +1067,7 @@
 
   function renderSkuCanal(meta){
     var rows = getSkuCanal(state.brand);
+    if (state.skuSubcanal !== 'TODOS') rows = rows.filter(function(r){ return r.subcanal === state.skuSubcanal; });
     var months = state.skuMonths;
     var curYear = 2026, prevYear = 2025;
     var cur = rows.filter(function(r){ return r.anio===curYear && months.indexOf(r.mes)>=0; });
@@ -1271,9 +1076,9 @@
     function agg(list){
       var map = {};
       list.forEach(function(r){
-        var k = r.producto + '|' + r.canal;
-        if (!map[k]) map[k] = {producto:r.producto, glosa:r.glosa, canal:r.canal, venta:0, c9l:0};
-        map[k].venta += r.venta; map[k].c9l += r.c9l;
+        var k = r.producto + '|' + r.subcanal;
+        if (!map[k]) map[k] = {producto:r.producto, glosa:r.glosa, subcanal:r.subcanal, c9l:0};
+        map[k].c9l += r.c9l;
       });
       return map;
     }
@@ -1282,31 +1087,31 @@
     Object.keys(prevMap).forEach(function(k){ if (keys.indexOf(k)<0) keys.push(k); });
 
     var list = keys.map(function(k){
-      var c = curMap[k] || {producto:prevMap[k].producto, glosa:prevMap[k].glosa, canal:prevMap[k].canal, venta:0, c9l:0};
-      var p = prevMap[k] || {venta:0, c9l:0};
-      var varPct = p.venta ? (c.venta-p.venta)/p.venta*100 : (c.venta>0 ? null : 0);
-      return {producto:c.producto, glosa:c.glosa, canal:c.canal, venta:c.venta, c9l:c.c9l, ventaPrev:p.venta, varPct:varPct};
-    }).filter(function(r){ return r.venta>0 || r.ventaPrev>0; });
-    list.sort(function(a,b){ return b.venta-a.venta; });
+      var c = curMap[k] || {producto:prevMap[k].producto, glosa:prevMap[k].glosa, subcanal:prevMap[k].subcanal, c9l:0};
+      var p = prevMap[k] || {c9l:0};
+      var varPct = p.c9l ? (c.c9l-p.c9l)/p.c9l*100 : (c.c9l>0 ? null : 0);
+      return {producto:c.producto, glosa:c.glosa, subcanal:c.subcanal, c9l:c.c9l, c9lPrev:p.c9l, varPct:varPct};
+    }).filter(function(r){ return r.c9l>0 || r.c9lPrev>0; });
+    list.sort(function(a,b){ return b.c9l-a.c9l; });
 
     var monthLabel = months.length===12 ? 'todo el año' : months.slice().sort(function(a,b){return a-b;}).map(function(m){return DATA.meses[m-1].slice(0,3);}).join(', ');
-    document.getElementById('skuCanalSub').textContent = 'Mostrando ' + monthLabel + ' ' + curYear + ' vs mismo período ' + prevYear;
+    var subLabel = state.skuSubcanal==='TODOS' ? '' : (' · subcanal ' + state.skuSubcanal);
+    document.getElementById('skuCanalSub').textContent = 'Mostrando ' + monthLabel + ' ' + curYear + ' vs mismo período ' + prevYear + subLabel + ', en C9L';
 
     var table = document.getElementById('skuCanalTable');
     if (!list.length){
       table.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Sin datos para el período seleccionado.</td></tr></tbody>';
       return;
     }
-    var html = '<thead><tr><th>Producto</th><th>Canal</th><th class="num">Venta '+curYear+'</th><th class="num">Venta '+prevYear+'</th><th class="num">Var. %</th><th class="num">C9L '+curYear+'</th></tr></thead><tbody>';
+    var html = '<thead><tr><th>Producto</th><th>Subcanal</th><th class="num">C9L '+curYear+'</th><th class="num">C9L '+prevYear+'</th><th class="num">Var. %</th></tr></thead><tbody>';
     list.forEach(function(r){
       var cls = r.varPct===null ? '' : (r.varPct>=0 ? 'chip up' : 'chip down');
-      var varTxt = r.varPct===null ? (r.venta>0?'Nuevo':'—') : fmtPct(r.varPct);
+      var varTxt = r.varPct===null ? (r.c9l>0?'Nuevo':'—') : fmtPct(r.varPct);
       html += '<tr><td class="name">'+(r.glosa||r.producto)+'<span class="prod-code">'+r.producto+'</span></td>' +
-        '<td><span class="canal-tag">'+r.canal+'</span></td>' +
-        '<td class="num">'+fmtCLP(r.venta)+'</td>' +
-        '<td class="num">'+fmtCLP(r.ventaPrev)+'</td>' +
-        '<td class="num">'+(cls?('<span class="'+cls+'" style="padding:2px 8px;">'+varTxt+'</span>'):varTxt)+'</td>' +
-        '<td class="num">'+fmtC9L(r.c9l)+'</td></tr>';
+        '<td><span class="canal-tag">'+r.subcanal+'</span></td>' +
+        '<td class="num">'+fmtC9L(r.c9l)+'</td>' +
+        '<td class="num">'+fmtC9L(r.c9lPrev)+'</td>' +
+        '<td class="num">'+(cls?('<span class="'+cls+'" style="padding:2px 8px;">'+varTxt+'</span>'):varTxt)+'</td></tr>';
     });
     html += '</tbody>';
     table.innerHTML = html;
@@ -1323,53 +1128,56 @@
       sel.appendChild(opt);
     });
     sel.addEventListener('change', function(){ state.clientesMonth = +sel.value; renderClientes(BRAND_META[state.brand]); });
-    document.getElementById('clientesCanalSelect').addEventListener('change', function(e){
+
+    var canalSel = document.getElementById('clientesCanalSelect');
+    canalSel.innerHTML = '<option value="TODOS">Todos los subcanales</option>' + SUBCANALES.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
+    canalSel.addEventListener('change', function(e){
       state.clientesCanal = e.target.value; renderClientes(BRAND_META[state.brand]);
     });
   }
 
   function getClientesMensual(brand){
-    if (!DATA.clientes_mensual) return [];
+    if (!DATA.clientes_mensual_subcanal) return [];
     if (brand === 'AMBAS'){
-      return ['STOLICHNAYA','BUHERO NEGRO'].reduce(function(acc,m){ return acc.concat(DATA.clientes_mensual[m]||[]); }, []);
+      return ['STOLICHNAYA','BUHERO NEGRO'].reduce(function(acc,m){ return acc.concat(DATA.clientes_mensual_subcanal[m]||[]); }, []);
     }
-    return DATA.clientes_mensual[brand] || [];
+    return DATA.clientes_mensual_subcanal[brand] || [];
   }
 
   function renderClientes(meta){
     var mes = state.clientesMonth;
     var canalFilter = state.clientesCanal;
     var rows = getClientesMensual(state.brand).filter(function(r){
-      return r.mes===mes && (canalFilter==='TODOS' || r.canal===canalFilter);
+      return r.mes===mes && (canalFilter==='TODOS' || r.subcanal===canalFilter);
     });
     var map = {};
     rows.forEach(function(r){
-      if (!map[r.cliente_id]) map[r.cliente_id] = {v25:0, v26:0, canales:{}};
-      if (r.anio===2025) map[r.cliente_id].v25 += r.venta;
-      if (r.anio===2026) map[r.cliente_id].v26 += r.venta;
-      map[r.cliente_id].canales[r.canal] = true;
+      if (!map[r.cliente_id]) map[r.cliente_id] = {c25:0, c26:0, canales:{}};
+      if (r.anio===2025) map[r.cliente_id].c25 += r.c9l;
+      if (r.anio===2026) map[r.cliente_id].c26 += r.c9l;
+      map[r.cliente_id].canales[r.subcanal] = true;
     });
     var mesNombre = DATA.meses[mes-1];
-    document.getElementById('clientesSub').textContent = 'Clientes que compraron menos (o dejaron de comprar) en '+mesNombre+' 2026 vs '+mesNombre+' 2025';
+    document.getElementById('clientesSub').textContent = 'Clientes que compraron menos (o dejaron de comprar) en '+mesNombre+' 2026 vs '+mesNombre+' 2025, en C9L';
 
     var list = Object.keys(map).map(function(cid){
       var v = map[cid];
-      var drop = v.v25 - v.v26;
+      var drop = v.c25 - v.c26;
       var canales = Object.keys(v.canales);
       return {
         cliente_id: cid,
         nombre: (DATA.clientes_nombres && DATA.clientes_nombres[cid]) || cid,
-        v25: v.v25, v26: v.v26, drop: drop,
-        pct: v.v25 ? (drop/v.v25*100) : null,
+        c25: v.c25, c26: v.c26, drop: drop,
+        pct: v.c25 ? (drop/v.c25*100) : null,
         canal: canales.length>1 ? 'Varios' : (canales[0]||'—')
       };
-    }).filter(function(r){ return r.v25>0 && r.drop>0; });
+    }).filter(function(r){ return r.c25>0 && r.drop>0; });
     list.sort(function(a,b){ return b.drop-a.drop; });
     var top = list.slice(0,15);
 
     var table = document.getElementById('clientesTable');
-    var totalV25 = Object.keys(map).reduce(function(a,cid){return a+map[cid].v25;},0);
-    if (!totalV25){
+    var totalC25 = Object.keys(map).reduce(function(a,cid){return a+map[cid].c25;},0);
+    if (!totalC25){
       table.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Sin datos de '+mesNombre+' 2025 para esta marca — no hay base de comparación.</td></tr></tbody>';
       return;
     }
@@ -1377,35 +1185,17 @@
       table.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Ningún cliente con caída de venta en el período seleccionado.</td></tr></tbody>';
       return;
     }
-    var html = '<thead><tr><th>Cliente</th><th>Canal</th><th class="num">Venta '+mesNombre+' 2025</th><th class="num">Venta '+mesNombre+' 2026</th><th class="num">Caída</th></tr></thead><tbody>';
+    var html = '<thead><tr><th>Cliente</th><th>Subcanal</th><th class="num">C9L '+mesNombre+' 2025</th><th class="num">C9L '+mesNombre+' 2026</th><th class="num">Caída</th></tr></thead><tbody>';
     top.forEach(function(r, i){
       html += '<tr><td class="name"><span class="rank-badge">'+(i+1)+'</span>'+r.nombre+'</td>' +
         '<td><span class="canal-tag">'+r.canal+'</span></td>' +
-        '<td class="num">'+fmtCLP(r.v25)+'</td>' +
-        '<td class="num">'+fmtCLP(r.v26)+'</td>' +
-        '<td class="num drop-cell">-'+fmtCLP(r.drop)+' ('+r.pct.toFixed(0)+'%)</td></tr>';
+        '<td class="num">'+fmtC9L(r.c25)+'</td>' +
+        '<td class="num">'+fmtC9L(r.c26)+'</td>' +
+        '<td class="num drop-cell">-'+fmtC9L(r.drop)+' ('+r.pct.toFixed(0)+'%)</td></tr>';
     });
     html += '</tbody>';
     table.innerHTML = html;
   }
-
-  // unit toggle (Venta / C9L) for the monthly trend chart
-  document.getElementById('unitToggle').addEventListener('click', function(e){
-    var btn = e.target.closest('button');
-    if (!btn) return;
-    state.unit = btn.dataset.unit;
-    markActive(document.getElementById('unitToggle'), 'unit', state.unit);
-    renderTrend(getMonthly(state.brand), BRAND_META[state.brand]);
-  });
-
-  // region toggle
-  document.getElementById('regionToggle').addEventListener('click', function(e){
-    var btn = e.target.closest('button');
-    if (!btn) return;
-    state.regionView = btn.dataset.view;
-    markActive(document.getElementById('regionToggle'), 'view', state.regionView);
-    renderRegions();
-  });
 
   // re-render on brand seg click needs delegation since buildBrandSeg rebuilds it, handled by inline onclick above; keep active state sync:
   document.getElementById('brandSeg').addEventListener('click', function(e){
