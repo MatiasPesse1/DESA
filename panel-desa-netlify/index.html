@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel DESA</title>
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Yellowtail&family=Rye&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --surface-2: #f2f1ec;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --accent: #4a3aa7;
+    --accent-soft: #ece9fb;
+    --stoli: #2a78d6;
+    --stoli-soft: #e4eefc;
+    --buhero: #eb6834;
+    --buhero-soft: #fce8dd;
+    --good: #0ca30c;
+    --good-soft: #e4f7e4;
+    --warning: #b8790a;
+    --warning-soft: #fdf0d8;
+    --critical: #d03b3b;
+    --critical-soft: #fbe6e6;
+    --shadow: 0 1px 2px rgba(11,11,11,0.04), 0 8px 24px -12px rgba(11,11,11,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --surface-2: #232322;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #8f8d87;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --accent: #9085e9;
+      --accent-soft: #2a2550;
+      --stoli: #3987e5;
+      --stoli-soft: #1b2c47;
+      --buhero: #d95926;
+      --buhero-soft: #3a2416;
+      --good: #0ca30c;
+      --good-soft: #123312;
+      --warning: #d99a1e;
+      --warning-soft: #3a2c0c;
+      --critical: #e66767;
+      --critical-soft: #3a1616;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #232322;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #8f8d87;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --accent: #9085e9;
+    --accent-soft: #2a2550;
+    --stoli: #3987e5;
+    --stoli-soft: #1b2c47;
+    --buhero: #d95926;
+    --buhero-soft: #3a2416;
+    --good: #0ca30c;
+    --good-soft: #123312;
+    --warning: #d99a1e;
+    --warning-soft: #3a2c0c;
+    --critical: #e66767;
+    --critical-soft: #3a1616;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--page);
+    color:var(--text-primary);
+    font-family:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding:0 16px;
+    padding-block: 20px 56px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
+  .num{font-family:"IBM Plex Mono", ui-monospace, monospace;}
+
+  /* hero / header */
+  .hero{
+    display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:18px;
+    border-radius:16px;padding:24px 26px;border:1px solid var(--border);
+    background:var(--surface);color:var(--text-primary);
+    transition:background .3s ease, color .3s ease, border-color .3s ease;
+    position:relative;overflow:hidden;
+  }
+  .hero.theme-stoli{
+    background:linear-gradient(155deg,#e2262e 0%,#c4151d 62%,#a8121a 100%);
+    border-color:transparent;color:#fff;
+  }
+  .hero.theme-buhero{
+    background:linear-gradient(155deg,#1c1b19 0%,#0c0c0b 75%);
+    border-color:transparent;color:#f2ede2;
+  }
+  .hero-left{min-width:0;}
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:6px;font-size:10.5px;text-transform:uppercase;letter-spacing:0.09em;
+    padding:4px 11px;border-radius:100px;background:var(--accent-soft);color:var(--accent);margin-bottom:10px;font-weight:600;
+  }
+  .hero.theme-stoli .hero-badge{background:rgba(255,255,255,0.2);color:#fff;}
+  .hero.theme-buhero .hero-badge{background:rgba(255,255,255,0.12);color:#e8c987;letter-spacing:0.12em;}
+  .wordmark{margin:0;line-height:1;text-wrap:balance;font-size:26px;font-weight:700;letter-spacing:-0.01em;font-family:"IBM Plex Sans",sans-serif;}
+  .wordmark.font-script{font-family:'Yellowtail',cursive;font-weight:400;font-size:46px;line-height:0.9;}
+  .wordmark.font-badge{font-family:'Rye',serif;text-transform:uppercase;letter-spacing:0.03em;font-size:28px;}
+  .hero-tag{margin:8px 0 0;font-size:13px;opacity:0.9;max-width:380px;}
+  .hero.theme-buhero .hero-tag{font-family:"IBM Plex Mono",monospace;letter-spacing:0.02em;opacity:0.75;}
+  .hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:9px;}
+  .asof{font-size:12px;color:var(--text-muted);}
+  .hero.theme-stoli .asof, .hero.theme-buhero .asof{color:rgba(255,255,255,0.7);}
+
+  /* segmented control */
+  .seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px;}
+  .seg button{
+    appearance:none;border:none;background:transparent;color:var(--text-secondary);
+    font:inherit;font-size:13px;font-weight:500;padding:7px 13px;border-radius:7px;cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  .seg button.active{background:var(--surface);color:var(--text-primary);box-shadow:var(--shadow);}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .hero.theme-stoli .seg{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.25);}
+  .hero.theme-stoli .seg button{color:rgba(255,255,255,0.85);}
+  .hero.theme-stoli .seg button.active{background:#fff;color:#c4151d;box-shadow:none;}
+  .hero.theme-buhero .seg{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.16);}
+  .hero.theme-buhero .seg button{color:rgba(242,237,226,0.75);}
+  .hero.theme-buhero .seg button.active{background:#e8c987;color:#161513;box-shadow:none;}
+
+  /* cards */
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;box-shadow:var(--shadow);
+  }
+  .card h2{font-size:14px;font-weight:600;margin:0 0 2px;}
+  .card .sub{font-size:12px;color:var(--text-muted);margin:0 0 14px;}
+
+  /* kpi grid */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;}
+  .kpi .label{font-size:12px;color:var(--text-muted);}
+  .kpi .value{font-size:24px;font-weight:600;font-family:"IBM Plex Mono",monospace;letter-spacing:-0.01em;}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:100px;width:fit-content;font-family:"IBM Plex Mono",monospace;}
+  .chip.up{background:var(--good-soft);color:var(--good);}
+  .chip.down{background:var(--critical-soft);color:var(--critical);}
+  .chip.flat{background:var(--surface-2);color:var(--text-muted);}
+  .kpi .note{font-size:11px;color:var(--text-muted);}
+
+  /* two-col grid */
+  .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;}
+  .grid2b{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+  /* chart */
+  .chart-wrap{position:relative;}
+  svg.chart{width:100%;height:auto;overflow:visible;}
+  .gridline{stroke:var(--grid);stroke-width:1;}
+  .baseline{stroke:var(--baseline);stroke-width:1;}
+  .axislabel{fill:var(--text-muted);font-size:10px;font-family:"IBM Plex Mono",monospace;}
+  .line-2025{fill:none;stroke:var(--text-muted);stroke-width:2;stroke-dasharray:4 3;}
+  .line-2026{fill:none;stroke-width:2.5;}
+  .dot-pt{cursor:pointer;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary);margin-top:10px;}
+  .legend .item{display:flex;align-items:center;gap:6px;}
+  .legend .swatch{width:14px;height:3px;border-radius:2px;}
+  .legend .swatch.dashed{background:repeating-linear-gradient(to right, var(--text-muted) 0 5px, transparent 5px 8px);}
+
+  .tooltip{
+    position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--border);
+    border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:var(--shadow);white-space:nowrap;
+    transform:translate(-50%,-115%);opacity:0;transition:opacity .1s;z-index:5;
+  }
+  .tooltip.show{opacity:1;}
+  .tooltip .t-title{font-weight:600;margin-bottom:3px;}
+  .tooltip .t-row{display:flex;justify-content:space-between;gap:14px;color:var(--text-secondary);}
+  .tooltip .t-row .num{color:var(--text-primary);font-weight:500;}
+
+  /* bars */
+  .barlist{display:flex;flex-direction:column;gap:9px;}
+  .bar-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font-size:12.5px;}
+  .bar-row .label{color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bar-track{grid-column:1/3;height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden;}
+  .bar-fill{height:100%;border-radius:5px;}
+  .bar-meta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);grid-column:1/3;}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th{text-align:left;font-weight:600;color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.03em;padding:0 8px 8px 0;border-bottom:1px solid var(--border);}
+  td{padding:8px 8px 8px 0;border-bottom:1px solid var(--border);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.num, th.num{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap;}
+  td.name{max-width:220px;}
+  .prod-code{color:var(--text-muted);font-size:10.5px;font-family:"IBM Plex Mono",monospace;display:block;}
+  .table-scroll{overflow-x:auto;}
+  .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:5px;background:var(--surface-2);color:var(--text-muted);font-size:10px;font-weight:600;font-family:"IBM Plex Mono",monospace;margin-right:6px;}
+
+  /* toggle small */
+  .mini-toggle{display:inline-flex;gap:2px;background:var(--surface-2);border-radius:8px;padding:2px;border:1px solid var(--border);}
+  .mini-toggle button{border:none;background:transparent;font:inherit;font-size:11.5px;font-weight:500;color:var(--text-secondary);padding:5px 10px;border-radius:6px;cursor:pointer;}
+  .mini-toggle button.active{background:var(--surface);color:var(--text-primary);box-shadow:var(--shadow);}
+
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .card-head h2{margin:0;}
+  .card-head .sub{margin:2px 0 0;}
+
+  /* insights */
+  .insights{display:flex;flex-direction:column;gap:10px;}
+  .insight{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border-radius:10px;background:var(--surface-2);}
+  .insight .ic{flex:none;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:1px;}
+  .insight p{margin:0;font-size:13px;color:var(--text-secondary);line-height:1.45;}
+  .insight strong{color:var(--text-primary);font-weight:600;}
+
+  /* stock placeholder */
+  .placeholder{
+    border:1.5px dashed var(--border);border-radius:12px;padding:22px;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);
+  }
+  .placeholder .ic{font-size:22px;}
+  .placeholder strong{color:var(--text-secondary);font-size:13.5px;font-weight:600;}
+  .placeholder span{font-size:12.5px;max-width:440px;}
+
+  /* stock alerts */
+  .alert-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .alert-pill{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:100px;}
+  .alert-pill .n{font-family:"IBM Plex Mono",monospace;}
+  .alert-pill.critical{background:var(--critical-soft);color:var(--critical);}
+  .alert-pill.warning{background:var(--warning-soft);color:var(--warning);}
+  .alert-pill.good{background:var(--good-soft);color:var(--good);}
+  .sev-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+  .sev-dot.critical{background:var(--critical);}
+  .sev-dot.warning{background:var(--warning);}
+  .sev-dot.good{background:var(--good);}
+  td.sev-cell{display:flex;align-items:center;gap:7px;}
+
+  footer{text-align:center;font-size:11.5px;color:var(--text-muted);padding-top:6px;}
+
+  @media (max-width:820px){
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .grid2, .grid2b{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){
+    .kpis{grid-template-columns:1fr 1fr;}
+    h1{font-size:19px;}
+  }
+</style>
+
+
+</head>
+<body>
+<div class="wrap">
+
+  <section class="hero theme-neutral" id="hero">
+    <div class="hero-left">
+      <span class="hero-badge" id="heroBadge">Panel de marcas · DESA</span>
+      <h1 class="wordmark font-default" id="brandTitle">Cargando…</h1>
+      <p class="hero-tag" id="heroTag">Ventas, stock e insights</p>
+    </div>
+    <div class="hero-right">
+      <div class="seg" id="brandSeg" role="tablist" aria-label="Marca"></div>
+      <p class="asof" id="asof"></p>
+    </div>
+  </section>
+
+  <section class="kpis" id="kpiRow"></section>
+
+  <section class="grid2">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Ventas mensuales · 2025 vs 2026</h2>
+          <p class="sub" id="trendSub">Comparación mes a mes en pesos (CLP)</p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <svg class="chart" id="trendChart" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="tooltip" id="trendTooltip"></div>
+      </div>
+      <div class="legend" id="trendLegend"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Agosto 2025 vs Agosto 2026</h2>
+          <p class="sub">Cierre de mes, comparación interanual</p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <svg class="chart" id="yoyChart" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div id="yoySummary" style="margin-top:8px;"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Insights automáticos</h2>
+        <p class="sub">Lecturas generadas a partir de los datos cargados</p>
+      </div>
+    </div>
+    <div class="insights" id="insightsList"></div>
+  </section>
+
+  <section class="grid2b">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Top productos</h2>
+          <p class="sub">Mayor venta acumulada 2025–2026</p>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="topProductsTable"></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Productos más bajos</h2>
+          <p class="sub">Menor venta acumulada (con movimiento)</p>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="bottomProductsTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid2b">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Regiones con más movimiento</h2>
+          <p class="sub" id="regionTopSub">Venta acumulada por zona</p>
+        </div>
+        <div class="mini-toggle" id="regionToggle">
+          <button data-view="ciudad" class="active">Ciudad</button>
+          <button data-view="bodega">Bodega</button>
+        </div>
+      </div>
+      <div class="barlist" id="regionTopList"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Regiones con menos movimiento</h2>
+          <p class="sub">Entre las zonas con venta registrada</p>
+        </div>
+      </div>
+      <div class="barlist" id="regionBottomList"></div>
+    </div>
+  </section>
+
+  <section class="grid2b">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Ventas por canal</h2>
+          <p class="sub">On trade vs off trade</p>
+        </div>
+      </div>
+      <div class="barlist" id="canalList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Stock por bodega</h2>
+          <p class="sub" id="stockBodegaSub">Stock físico disponible, unidades</p>
+        </div>
+      </div>
+      <div class="barlist" id="stockBodegaList"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Stock en tránsito</h2>
+        <p class="sub" id="transitSub">Unidades ya despachadas, en camino a su bodega destino (bodegas "TRAN-")</p>
+      </div>
+    </div>
+    <div id="transitBody"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Alertas de quiebre y cobertura de stock</h2>
+        <p class="sub" id="stockAlertSub">Cruce entre stock físico disponible y ritmo de venta reciente</p>
+      </div>
+    </div>
+    <div id="stockAlertBody"></div>
+  </section>
+
+  <footer>Datos: ventas facturadas 2025–2026 · Stolichnaya con histórico completo · Buhero Negro desde agosto 2026 · Stock físico al 22-09-2026</footer>
+</div>
+
+<script>
+(function(){
+  var DATA = null;
+  var state = { brand: null, regionView: 'ciudad' };
+  var TRAN_LABELS = {
+    'TRAN-VIÑA': 'Viña del Mar', 'TRAN-PUNTA ARENA': 'Punta Arenas', 'TRAN-PTOMONTT': 'Puerto Montt',
+    'TRAN-TEMUCO': 'Temuco', 'TRAN-SERENA': 'La Serena', 'TRAN-COPIAPO': 'Copiapó', 'TRAN-ARICA': 'Arica',
+    'TRAN-SANTIAGO': 'Santiago', 'TRAN-IQUIQUETN': 'Iquique', 'TRAN-CURICO': 'Curicó', 'TRAN-CONCEPCION': 'Concepción',
+    'TRAN-ANTOFAGASTA': 'Antofagasta', 'TRAN_MERCADERIA': 'Mercadería (sin destino asignado)'
+  };
+  function tranLabel(b){ return TRAN_LABELS[b] || (b||'').replace(/^TRAN[-_]/,''); }
+
+  var BRAND_META = {
+    'STOLICHNAYA': {
+      color: 'var(--stoli)', soft: 'var(--stoli-soft)', label: 'Stolichnaya',
+      heroClass: 'theme-stoli', wordFont: 'font-script', wordText: 'Stoli',
+      badge: 'Marca · Vodka', tag: 'Ventas, stock e insights en tiempo real'
+    },
+    'BUHERO NEGRO': {
+      color: 'var(--buhero)', soft: 'var(--buhero-soft)', label: 'Buhero Negro',
+      heroClass: 'theme-buhero', wordFont: 'font-badge', wordText: 'Buhero Negro',
+      badge: 'Marca · Fernet', tag: 'Ventas, stock e insights en tiempo real'
+    },
+    'AMBAS': {
+      color: 'var(--accent)', soft: 'var(--accent-soft)', label: 'Ambas marcas',
+      heroClass: 'theme-neutral', wordFont: 'font-default', wordText: 'Ambas marcas',
+      badge: 'Panel de marcas · DESA', tag: 'Ventas, stock e insights en tiempo real'
+    }
+  };
+
+  function fmtCLP(n){
+    if (n === null || n === undefined || isNaN(n)) return '—';
+    return '$' + Math.round(n).toLocaleString('es-CL');
+  }
+  function fmtLitros(n){
+    if (n === null || n === undefined || isNaN(n)) return '—';
+    return Math.round(n).toLocaleString('es-CL') + ' L';
+  }
+  function fmtPct(n){
+    if (n === null || n === undefined || isNaN(n)) return '—';
+    var s = (n>=0?'+':'') + n.toFixed(1) + '%';
+    return s;
+  }
+  function resolveVar(v){
+    return getComputedStyle(document.body).getPropertyValue(v.replace('var(','').replace(')','')).trim() || v;
+  }
+
+  fetch('data.json').then(function(r){ return r.json(); }).then(function(d){
+    DATA = d;
+    state.brand = 'STOLICHNAYA';
+    document.getElementById('asof').textContent = 'Actualizado al ' + (d.meta && d.meta.current_partial ? d.meta.current_partial.asof.split('-').reverse().join('-') : d.meta.generated);
+    buildBrandSeg();
+    render();
+  }).catch(function(err){
+    document.getElementById('brandTitle').textContent = 'No se pudo cargar la información';
+    console.error(err);
+  });
+
+  function buildBrandSeg(){
+    var seg = document.getElementById('brandSeg');
+    var opts = [['STOLICHNAYA','Stolichnaya'], ['BUHERO NEGRO','Buhero Negro'], ['AMBAS','Ambas']];
+    seg.innerHTML = '';
+    opts.forEach(function(o){
+      var b = document.createElement('button');
+      b.textContent = o[1];
+      b.dataset.brand = o[0];
+      b.className = (o[0]===state.brand) ? 'active' : '';
+      b.setAttribute('role','tab');
+      b.onclick = function(){ state.brand = o[0]; render(); };
+      seg.appendChild(b);
+    });
+  }
+
+  function markActive(container, attr, val){
+    Array.prototype.forEach.call(container.children, function(c){
+      c.className = (c.dataset[attr] === val) ? 'active' : '';
+    });
+  }
+
+  // ---------- data helpers ----------
+  function getMonthly(brand){
+    if (brand === 'AMBAS'){
+      var map = {};
+      ['STOLICHNAYA','BUHERO NEGRO'].forEach(function(m){
+        (DATA.monthly[m]||[]).forEach(function(r){
+          var k = r.anio+'-'+r.mes;
+          if(!map[k]) map[k] = {anio:r.anio, mes:r.mes, mes_nombre:r.mes_nombre, venta:0, litros:0, cantidad:0};
+          map[k].venta += r.venta; map[k].litros += r.litros; map[k].cantidad += r.cantidad;
+        });
+      });
+      return Object.keys(map).map(function(k){return map[k];}).sort(function(a,b){ return (a.anio*12+a.mes)-(b.anio*12+b.mes); });
+    }
+    return (DATA.monthly[brand]||[]).slice().sort(function(a,b){ return (a.anio*12+a.mes)-(b.anio*12+b.mes); });
+  }
+  function getList(section, brand){
+    if (brand === 'AMBAS'){
+      var map = {}, order = [];
+      ['STOLICHNAYA','BUHERO NEGRO'].forEach(function(m){
+        (DATA[section][m]||[]).forEach(function(r){
+          var key = section==='products' ? r.producto : (section==='ciudad' ? r.ciudad : (section==='bodega'? r.bodega : r.canal));
+          if(!map[key]){ map[key] = Object.assign({}, r); map[key].venta=0; map[key].litros=0; order.push(key); }
+          map[key].venta += r.venta; map[key].litros += r.litros || 0;
+        });
+      });
+      return order.map(function(k){return map[k];}).sort(function(a,b){return b.venta-a.venta;});
+    }
+    return (DATA[section][brand]||[]).slice().sort(function(a,b){return b.venta-a.venta;});
+  }
+  function findMonth(series, anio, mes){
+    for (var i=0;i<series.length;i++){ if(series[i].anio===anio && series[i].mes===mes) return series[i]; }
+    return null;
+  }
+
+  // ---------- render ----------
+  function render(){
+    var meta = BRAND_META[state.brand];
+    var hero = document.getElementById('hero');
+    hero.className = 'hero ' + meta.heroClass;
+    var titleEl = document.getElementById('brandTitle');
+    titleEl.textContent = meta.wordText;
+    titleEl.className = 'wordmark ' + meta.wordFont;
+    document.getElementById('heroBadge').textContent = meta.badge;
+    document.getElementById('heroTag').textContent = meta.tag;
+
+    var monthly = getMonthly(state.brand);
+    renderKPIs(monthly);
+    renderTrend(monthly, meta);
+    renderYoY(monthly, meta);
+    renderInsights(monthly, meta);
+    renderProducts();
+    renderRegions();
+    renderCanal(meta);
+    renderStockBodega(meta);
+    renderTransit(meta);
+    renderStockAlerts(meta);
+  }
+
+  function getTransitDetail(brand){
+    if (!DATA.stock || !DATA.stock.transit_detail) return [];
+    var rows = DATA.stock.transit_detail;
+    if (brand === 'AMBAS') return rows.slice();
+    return rows.filter(function(r){ return r.marca === brand; });
+  }
+
+  function renderTransit(meta){
+    var rows = getTransitDetail(state.brand).slice().sort(function(a,b){return b.unidades-a.unidades;});
+    var body = document.getElementById('transitBody');
+    var sub = document.getElementById('transitSub');
+    var totalTransit = DATA.stock ? (state.brand==='AMBAS'
+        ? Object.values(DATA.stock.transit_total_by_marca||{}).reduce(function(a,b){return a+b;},0)
+        : (DATA.stock.transit_total_by_marca||{})[state.brand] || 0) : 0;
+
+    if (!rows.length){
+      sub.textContent = 'Sin unidades en tránsito registradas para esta marca.';
+      body.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px;margin:0;">No hay despachos en camino ahora mismo.</p>';
+      return;
+    }
+    sub.textContent = Math.round(totalTransit).toLocaleString('es-CL') + ' unidades despachadas, en camino a su bodega destino';
+    var html = '<div class="table-scroll"><table><thead><tr><th>Destino</th><th>Producto</th><th class="num">Unidades en camino</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      html += '<tr><td>'+tranLabel(r.bodega_destino)+'</td>' +
+        '<td class="name">'+(r.glosa||r.producto)+'<span class="prod-code">'+r.producto+(state.brand==='AMBAS'?' · '+r.marca:'')+'</span></td>' +
+        '<td class="num">'+Math.round(r.unidades).toLocaleString('es-CL')+' un.</td></tr>';
+    });
+    html += '</tbody></table></div>';
+    body.innerHTML = html;
+  }
+
+  function getStockBodega(brand){
+    if (!DATA.stock) return [];
+    if (brand === 'AMBAS'){
+      var map = {}, order = [];
+      ['STOLICHNAYA','BUHERO NEGRO'].forEach(function(m){
+        (DATA.stock.stock_by_bodega[m]||[]).forEach(function(r){
+          if(!map[r.bodega]){ map[r.bodega]=0; order.push(r.bodega); }
+          map[r.bodega]+=r.stock;
+        });
+      });
+      return order.map(function(b){return {bodega:b, stock:map[b]};}).sort(function(a,b){return b.stock-a.stock;});
+    }
+    return (DATA.stock.stock_by_bodega[brand]||[]).slice();
+  }
+  function getStockAlerts(brand){
+    if (!DATA.stock) return [];
+    var all = DATA.stock.alerts || [];
+    if (brand === 'AMBAS') return all.slice();
+    return all.filter(function(a){ return a.marca === brand; });
+  }
+
+  function renderStockBodega(meta){
+    var list = getStockBodega(state.brand).filter(function(r){return r.stock>0;}).slice(0,10);
+    var total = list.reduce(function(a,r){return a+r.stock;},0) || 1;
+    var accent = resolveVar(meta.color);
+    var el = document.getElementById('stockBodegaList');
+    el.innerHTML = '';
+    if (!list.length){
+      el.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px;">Sin stock físico registrado para esta marca.</p>';
+      return;
+    }
+    list.forEach(function(r){
+      var pct = r.stock/total*100;
+      var row = document.createElement('div');
+      row.className = 'bar-row';
+      row.innerHTML = '<span class="label">'+r.bodega+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+Math.round(r.stock).toLocaleString('es-CL')+' un.</span>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:'+Math.max(pct,1.5)+'%;background:'+accent+'"></div></div>' +
+        '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del stock de la marca</span></div>';
+      el.appendChild(row);
+    });
+    var totalAll = DATA.stock.stock_total_by_marca ?
+      (state.brand==='AMBAS' ? Object.values(DATA.stock.stock_total_by_marca).reduce(function(a,b){return a+b;},0) : (DATA.stock.stock_total_by_marca[state.brand]||0)) : 0;
+    document.getElementById('stockBodegaSub').textContent = 'Stock físico actual: ' + Math.round(totalAll).toLocaleString('es-CL') + ' unidades en total';
+  }
+
+  function renderStockAlerts(meta){
+    var alerts = getStockAlerts(state.brand);
+    var body = document.getElementById('stockAlertBody');
+    var sub = document.getElementById('stockAlertSub');
+
+    if (!DATA.stock){
+      body.innerHTML = '<div class="placeholder"><div class="ic">📦</div><strong>Sin datos de stock cargados todavía</strong><span>Sube tu archivo de inventario para activar este módulo.</span></div>';
+      return;
+    }
+    if (!alerts.length){
+      sub.textContent = 'No hay productos con venta reciente para evaluar cobertura de esta marca.';
+      body.innerHTML = '';
+      return;
+    }
+    var counts = {critical:0, warning:0, good:0};
+    alerts.forEach(function(a){ counts[a.level] = (counts[a.level]||0)+1; });
+    sub.textContent = 'Cruce entre stock físico actual y ritmo de venta de los últimos 3 meses cerrados';
+
+    var html = '<div class="alert-summary">';
+    if (counts.critical) html += '<div class="alert-pill critical"><span class="sev-dot critical"></span>'+counts.critical+' en quiebre</div>';
+    if (counts.warning) html += '<div class="alert-pill warning"><span class="sev-dot warning"></span>'+counts.warning+' cobertura baja</div>';
+    if (counts.good) html += '<div class="alert-pill good"><span class="sev-dot good"></span>'+counts.good+' stock saludable</div>';
+    html += '</div>';
+
+    html += '<div class="table-scroll"><table><thead><tr><th>Estado</th><th>Producto</th><th class="num">Stock</th><th class="num">En tránsito</th><th class="num">Venta prom./mes</th><th class="num">Cobertura</th></tr></thead><tbody>';
+    var order = {critical:0, warning:1, good:2};
+    alerts.slice().sort(function(a,b){ return order[a.level]-order[b.level] || b.avg_monthly_units-a.avg_monthly_units; }).forEach(function(a){
+      var sevLabel = a.level==='critical' ? 'Quiebre' : (a.level==='warning' ? 'Cobertura baja' : 'Saludable');
+      var covText = a.days_coverage===null ? '—' : (a.days_coverage < 1 ? '<1 día' : Math.round(a.days_coverage)+' días');
+      var transitText = a.in_transit>0 ? ('+'+Math.round(a.in_transit).toLocaleString('es-CL')+' un.') : '—';
+      html += '<tr><td class="sev-cell"><span class="sev-dot '+a.level+'"></span>'+sevLabel+'</td>' +
+        '<td class="name">'+(a.glosa||a.producto)+'<span class="prod-code">'+a.producto+(state.brand==='AMBAS'?' · '+a.marca:'')+'</span></td>' +
+        '<td class="num">'+Math.round(a.stock).toLocaleString('es-CL')+' un.</td>' +
+        '<td class="num" style="color:'+(a.in_transit>0?'var(--text-secondary)':'var(--text-muted)')+'">'+transitText+'</td>' +
+        '<td class="num">'+a.avg_monthly_units.toLocaleString('es-CL')+' un.</td>' +
+        '<td class="num">'+covText+'</td></tr>';
+    });
+    html += '</tbody></table></div>';
+    body.innerHTML = html;
+  }
+
+  function renderKPIs(monthly){
+    var closed = DATA.meta.last_closed, partial = DATA.meta.current_partial;
+    var mClosed = findMonth(monthly, closed.anio, closed.mes);
+    var mPrev = mClosed ? findMonth(monthly, closed.mes===1?closed.anio-1:closed.anio, closed.mes===1?12:closed.mes-1) : null;
+    var mYoY = mClosed ? findMonth(monthly, closed.anio-1, closed.mes) : null;
+    var mPartial = findMonth(monthly, partial.anio, partial.mes);
+    var skuCount = getList('products', state.brand).filter(function(p){return p.venta>0;}).length;
+
+    var mom = (mClosed && mPrev) ? ((mClosed.venta - mPrev.venta) / mPrev.venta * 100) : null;
+    var yoy = (mClosed && mYoY) ? ((mClosed.venta - mYoY.venta) / mYoY.venta * 100) : null;
+
+    var cards = [
+      {
+        label: closed.nombre + ' (mes cerrado)',
+        value: mClosed ? fmtCLP(mClosed.venta) : '— sin datos',
+        chip: mom===null ? null : (mom>=0.05?'up':(mom<-0.05?'down':'flat')),
+        chipText: mom===null ? 'Sin mes anterior' : (fmtPct(mom) + ' vs mes anterior'),
+      },
+      {
+        label: 'vs ' + closed.nombre.replace('2026','2025'),
+        value: yoy===null ? 'Sin dato 2025' : fmtPct(yoy),
+        chip: yoy===null ? null : (yoy>=0.05?'up':(yoy<-0.05?'down':'flat')),
+        chipText: mYoY ? ('2025: ' + fmtCLP(mYoY.venta)) : 'Marca sin historial 2025',
+      },
+      {
+        label: 'Litros · ' + closed.nombre,
+        value: mClosed ? fmtLitros(mClosed.litros) : '—',
+        chip: null,
+        chipText: partial.nombre + ' (parcial): ' + (mPartial? fmtLitros(mPartial.litros) : '—'),
+      },
+      {
+        label: 'SKUs con venta registrada',
+        value: skuCount,
+        chip: null,
+        chipText: partial.nombre + ' parcial al ' + partial.asof.slice(8,10) + '/' + partial.asof.slice(5,7),
+      },
+    ];
+
+    var row = document.getElementById('kpiRow');
+    row.innerHTML = '';
+    cards.forEach(function(c){
+      var el = document.createElement('div');
+      el.className = 'kpi';
+      var chipHtml = c.chip ? '<span class="chip '+c.chip+'">'+(c.chip==='up'?'▲':c.chip==='down'?'▼':'—')+' '+c.chipText+'</span>' : '<span class="note">'+c.chipText+'</span>';
+      el.innerHTML = '<span class="label">'+c.label+'</span><span class="value">'+c.value+'</span>'+chipHtml;
+      row.appendChild(el);
+    });
+  }
+
+  function renderTrend(monthly, meta){
+    var svg = document.getElementById('trendChart');
+    var W = 640, H = 260, padL = 44, padR = 12, padT = 14, padB = 26;
+    var months = DATA.meses;
+    var series25 = months.map(function(_,i){ var m = findMonth(monthly, 2025, i+1); return m ? m.venta : null; });
+    var series26 = months.map(function(_,i){ var m = findMonth(monthly, 2026, i+1); return m ? m.venta : null; });
+    var allVals = series25.concat(series26).filter(function(v){return v!==null;});
+    var maxV = allVals.length ? Math.max.apply(null, allVals) : 1;
+    maxV = maxV * 1.12 || 1;
+
+    var innerW = W - padL - padR, innerH = H - padT - padB;
+    function x(i){ return padL + (innerW/11)*i; }
+    function y(v){ return padT + innerH - (v/maxV)*innerH; }
+
+    var svgns = 'http://www.w3.org/2000/svg';
+    var parts = [];
+
+    // gridlines (4 horizontal)
+    var steps = 4;
+    for (var s=0; s<=steps; s++){
+      var val = maxV/steps*s;
+      var yy = y(val);
+      parts.push('<line class="gridline" x1="'+padL+'" x2="'+(W-padR)+'" y1="'+yy+'" y2="'+yy+'"/>');
+      parts.push('<text class="axislabel" x="'+(padL-6)+'" y="'+(yy+3)+'" text-anchor="end">'+shortNum(val)+'</text>');
+    }
+    // baseline
+    parts.push('<line class="baseline" x1="'+padL+'" x2="'+(W-padR)+'" y1="'+(padT+innerH)+'" y2="'+(padT+innerH)+'"/>');
+    // x labels (every month, abbreviated)
+    months.forEach(function(m,i){
+      parts.push('<text class="axislabel" x="'+x(i)+'" y="'+(H-6)+'" text-anchor="middle">'+m.slice(0,3)+'</text>');
+    });
+
+    function pathFor(series){
+      var d = '';
+      var started = false;
+      series.forEach(function(v,i){
+        if (v===null){ started=false; return; }
+        d += (started ? ' L ' : ' M ') + x(i) + ' ' + y(v);
+        started = true;
+      });
+      return d.trim();
+    }
+
+    var has2025 = series25.some(function(v){return v!==null;});
+    if (has2025) parts.push('<path class="line-2025" d="'+pathFor(series25)+'"/>');
+    parts.push('<path class="line-2026" d="'+pathFor(series26)+'" stroke="'+resolveVar(meta.color)+'"/>');
+
+    // points (hover targets)
+    function addPoints(series, year, cls, color){
+      series.forEach(function(v,i){
+        if (v===null) return;
+        parts.push('<circle class="dot-pt" data-year="'+year+'" data-month="'+i+'" cx="'+x(i)+'" cy="'+y(v)+'" r="9" fill="transparent" stroke="none"/>');
+        parts.push('<circle cx="'+x(i)+'" cy="'+y(v)+'" r="3" fill="'+color+'" stroke="var(--surface)" stroke-width="1.5" pointer-events="none"/>');
+      });
+    }
+    if (has2025) addPoints(series25, 2025, 'p25', resolveVar('var(--text-muted)'));
+    addPoints(series26, 2026, 'p26', resolveVar(meta.color));
+
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    svg.innerHTML = parts.join('');
+
+    // legend
+    var leg = document.getElementById('trendLegend');
+    leg.innerHTML = (has2025 ? '<div class="item"><span class="swatch dashed"></span>2025</div>' : '') +
+                     '<div class="item"><span class="swatch" style="background:'+meta.color+'"></span>2026</div>';
+    if (!has2025){
+      leg.innerHTML += '<div class="item" style="color:var(--text-muted)">Sin historial 2025 para esta marca</div>';
+    }
+
+    // tooltip interactions
+    var tooltip = document.getElementById('trendTooltip');
+    var dots = svg.querySelectorAll('.dot-pt');
+    dots.forEach(function(dot){
+      dot.addEventListener('mouseenter', function(){
+        var year = +dot.dataset.year, mi = +dot.dataset.month;
+        var m = findMonth(monthly, year, mi+1);
+        if(!m) return;
+        tooltip.innerHTML = '<div class="t-title">'+m.mes_nombre+' '+year+'</div>' +
+          '<div class="t-row"><span>Venta</span><span class="num">'+fmtCLP(m.venta)+'</span></div>' +
+          '<div class="t-row"><span>Litros</span><span class="num">'+fmtLitros(m.litros)+'</span></div>';
+        var rect = dot.getBoundingClientRect();
+        var wrapRect = svg.parentElement.getBoundingClientRect();
+        tooltip.style.left = (rect.left - wrapRect.left + rect.width/2) + 'px';
+        tooltip.style.top = (rect.top - wrapRect.top) + 'px';
+        tooltip.classList.add('show');
+      });
+      dot.addEventListener('mouseleave', function(){ tooltip.classList.remove('show'); });
+    });
+
+    var sub = document.getElementById('trendSub');
+    sub.textContent = has2025 ? 'Comparación mes a mes en pesos (CLP)' : 'Marca con historial desde agosto 2026 — se construye mes a mes';
+  }
+
+  function shortNum(v){
+    if (v>=1e9) return (v/1e9).toFixed(1)+'B';
+    if (v>=1e6) return (v/1e6).toFixed(0)+'M';
+    if (v>=1e3) return (v/1e3).toFixed(0)+'K';
+    return Math.round(v);
+  }
+
+  function renderYoY(monthly, meta){
+    var closed = DATA.meta.last_closed;
+    var m26 = findMonth(monthly, closed.anio, closed.mes);
+    var m25 = findMonth(monthly, closed.anio-1, closed.mes);
+    var svg = document.getElementById('yoyChart');
+    var W=300,H=200, padL=50, padR=20, padT=14, padB=26;
+    var innerW=W-padL-padR, innerH=H-padT-padB;
+    var vals = [m25?m25.venta:0, m26?m26.venta:0];
+    var maxV = Math.max.apply(null, vals) * 1.15 || 1;
+    var bw = innerW/2*0.5;
+    function y(v){ return padT+innerH-(v/maxV)*innerH; }
+    var parts = [];
+    parts.push('<line class="baseline" x1="'+padL+'" x2="'+(W-padR)+'" y1="'+(padT+innerH)+'" y2="'+(padT+innerH)+'"/>');
+    var labels = ['2025','2026'];
+    var colors = [resolveVar('var(--text-muted)'), resolveVar(meta.color)];
+    [vals[0], vals[1]].forEach(function(v, i){
+      var cx = padL + innerW*0.28 + i*innerW*0.44;
+      var h = (v/maxV)*innerH;
+      var yy = padT+innerH-h;
+      parts.push('<rect x="'+(cx-bw/2)+'" y="'+yy+'" width="'+bw+'" height="'+h+'" rx="4" fill="'+colors[i]+'"'+(i===0?' opacity="0.55"':'')+'/>');
+      parts.push('<text class="axislabel" x="'+cx+'" y="'+(padT+innerH+16)+'" text-anchor="middle">'+labels[i]+'</text>');
+      parts.push('<text x="'+cx+'" y="'+(yy-8)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--text-primary)">'+shortNum(v)+'</text>');
+    });
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    svg.innerHTML = parts.join('');
+
+    var summary = document.getElementById('yoySummary');
+    if (m25 && m26){
+      var delta = (m26.venta - m25.venta)/m25.venta*100;
+      var cls = delta>=0.05?'up':(delta<-0.05?'down':'flat');
+      summary.innerHTML = '<span class="chip '+cls+'">'+(cls==='up'?'▲':cls==='down'?'▼':'—')+' '+fmtPct(delta)+'</span> <span style="font-size:12px;color:var(--text-muted);margin-left:6px;">'+fmtCLP(m25.venta)+' → '+fmtCLP(m26.venta)+'</span>';
+    } else {
+      summary.innerHTML = '<span class="note" style="color:var(--text-muted);font-size:12px;">Sin datos de agosto 2025 para esta marca — no hay base de comparación.</span>';
+    }
+  }
+
+  function renderInsights(monthly, meta){
+    var list = document.getElementById('insightsList');
+    var insights = [];
+    var closed = DATA.meta.last_closed;
+    var m26 = findMonth(monthly, closed.anio, closed.mes);
+    var m25 = findMonth(monthly, closed.anio-1, closed.mes);
+    var prev = findMonth(monthly, closed.mes===1?closed.anio-1:closed.anio, closed.mes===1?12:closed.mes-1);
+
+    if (m26 && m25){
+      var d = (m26.venta-m25.venta)/m25.venta*100;
+      insights.push({
+        icon: d>=0?'good':'critical', symbol: d>=0?'▲':'▼',
+        html: (d>=0?'Crecimiento interanual':'Caída interanual')+' de <strong>'+fmtPct(d)+'</strong> en '+closed.nombre+' comparado con el mismo mes de 2025 ('+fmtCLP(m25.venta)+' → '+fmtCLP(m26.venta)+').'
+      });
+    } else if (m26) {
+      insights.push({ icon:'warning', symbol:'!', html: closed.nombre+' registró <strong>'+fmtCLP(m26.venta)+'</strong> en ventas — todavía sin base 2025 para comparar (marca en construcción).' });
+    }
+    if (m26 && prev){
+      var dm = (m26.venta-prev.venta)/prev.venta*100;
+      insights.push({
+        icon: dm>=0?'good':'warning', symbol: dm>=0?'▲':'▼',
+        html: 'Variación mes a mes de <strong>'+fmtPct(dm)+'</strong> entre '+prev.mes_nombre+' y '+closed.nombre+'.'
+      });
+    }
+
+    var prods = getList('products', state.brand).filter(function(p){return p.venta>0;});
+    if (prods.length){
+      var totalVenta = prods.reduce(function(a,p){return a+p.venta;},0);
+      var top = prods[0];
+      var share = totalVenta>0 ? (top.venta/totalVenta*100) : 0;
+      insights.push({
+        icon:'accent', symbol:'★',
+        html: '<strong>'+(top.glosa||top.producto)+'</strong> concentra el <strong>'+share.toFixed(1)+'%</strong> de la venta acumulada de '+meta.label+' entre '+prods.length+' SKU'+(prods.length===1?'':'s')+' con movimiento.'
+      });
+      if (prods.length > 1){
+        var bottom = prods[prods.length-1];
+        insights.push({ icon:'muted', symbol:'i', html: 'El producto con menor venta registrada es <strong>'+(bottom.glosa||bottom.producto)+'</strong>, con '+fmtCLP(bottom.venta)+' acumulados.' });
+      }
+    }
+
+    var cities = getList('ciudad', state.brand).filter(function(c){return c.venta>0;});
+    if (cities.length){
+      var totalC = cities.reduce(function(a,c){return a+c.venta;},0);
+      insights.push({ icon:'accent', symbol:'📍', html: '<strong>'+cities[0].ciudad+'</strong> es la ciudad con más movimiento, con el '+(cities[0].venta/totalC*100).toFixed(1)+'% de la venta.' });
+    }
+
+    var stockAlerts = getStockAlerts(state.brand);
+    var criticalStock = stockAlerts.filter(function(a){return a.level==='critical';});
+    if (criticalStock.length){
+      var names = criticalStock.slice(0,3).map(function(a){return a.glosa||a.producto;}).join(', ');
+      insights.push({ icon:'critical', symbol:'!', html: '<strong>'+criticalStock.length+' producto'+(criticalStock.length===1?'':'s')+' en quiebre de stock</strong> con venta activa reciente: '+names+(criticalStock.length>3?'…':'')+'.' });
+    }
+
+    list.innerHTML = '';
+    if (!insights.length){
+      list.innerHTML = '<div class="insight"><p>Todavía no hay suficientes datos para generar insights de esta marca.</p></div>';
+      return;
+    }
+    var iconBg = {good:'var(--good-soft)', critical:'var(--critical-soft)', warning:'var(--warning-soft)', accent:'var(--accent-soft)', muted:'var(--surface-2)'};
+    var iconColor = {good:'var(--good)', critical:'var(--critical)', warning:'var(--warning)', accent:'var(--accent)', muted:'var(--text-muted)'};
+    insights.forEach(function(ins){
+      var el = document.createElement('div');
+      el.className = 'insight';
+      el.innerHTML = '<span class="ic" style="background:'+iconBg[ins.icon]+';color:'+iconColor[ins.icon]+'">'+ins.symbol+'</span><p>'+ins.html+'</p>';
+      list.appendChild(el);
+    });
+  }
+
+  function renderProducts(){
+    var prods = getList('products', state.brand).filter(function(p){return p.venta>0;});
+    var total = prods.reduce(function(a,p){return a+p.venta;},0) || 1;
+    var top = prods.slice(0,8);
+    var bottom = prods.slice(-5).reverse();
+
+    function buildTable(rows, el){
+      var html = '<thead><tr><th>Producto</th><th class="num">Venta</th><th class="num">Litros</th><th class="num">% part.</th></tr></thead><tbody>';
+      rows.forEach(function(p, i){
+        html += '<tr><td class="name"><span class="rank-badge">'+(i+1)+'</span>'+(p.glosa||p.producto)+'<span class="prod-code">'+p.producto+'</span></td>' +
+          '<td class="num">'+fmtCLP(p.venta)+'</td><td class="num">'+fmtLitros(p.litros)+'</td><td class="num">'+(p.venta/total*100).toFixed(1)+'%</td></tr>';
+      });
+      html += '</tbody>';
+      el.innerHTML = html;
+    }
+    buildTable(top, document.getElementById('topProductsTable'));
+    if (bottom.length && bottom[0] !== top[0]){
+      buildTable(bottom, document.getElementById('bottomProductsTable'));
+    } else if (prods.length <= 8) {
+      document.getElementById('bottomProductsTable').innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Con pocos SKUs activos, el ranking coincide con el top de productos.</td></tr></tbody>';
+    } else {
+      buildTable(bottom, document.getElementById('bottomProductsTable'));
+    }
+  }
+
+  function renderRegions(){
+    var section = state.regionView; // 'ciudad' or 'bodega'
+    var list = getList(section, state.brand).filter(function(r){return r.venta>0;});
+    var total = list.reduce(function(a,r){return a+r.venta;},0) || 1;
+    var top = list.slice(0,6);
+    var bottom = list.slice(-6).reverse();
+    var accent = resolveVar(BRAND_META[state.brand].color);
+
+    function buildBars(rows, el, muted){
+      el.innerHTML = '';
+      rows.forEach(function(r){
+        var name = section==='ciudad' ? r.ciudad : r.bodega;
+        var pct = (r.venta/total*100);
+        var row = document.createElement('div');
+        row.className = 'bar-row';
+        row.innerHTML = '<span class="label">'+name+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(r.venta)+'</span>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:'+Math.max(pct,1.5)+'%;background:'+(muted?'var(--text-muted)':accent)+';opacity:'+(muted?'0.55':'1')+'"></div></div>' +
+          '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtLitros(r.litros)+'</span></div>';
+        el.appendChild(row);
+      });
+      if (!rows.length){
+        el.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px;">Sin datos suficientes.</p>';
+      }
+    }
+    buildBars(top, document.getElementById('regionTopList'), false);
+    buildBars(bottom, document.getElementById('regionBottomList'), true);
+    document.getElementById('regionTopSub').textContent = 'Venta acumulada por ' + (section==='ciudad'?'ciudad':'bodega/local DESA');
+  }
+
+  function renderCanal(meta){
+    var list = getList('canal', state.brand).filter(function(c){return c.venta>0;}).sort(function(a,b){return b.venta-a.venta;});
+    var total = list.reduce(function(a,c){return a+c.venta;},0) || 1;
+    var el = document.getElementById('canalList');
+    el.innerHTML = '';
+    var accent = resolveVar(meta.color);
+    list.forEach(function(c, i){
+      var pct = c.venta/total*100;
+      var row = document.createElement('div');
+      row.className = 'bar-row';
+      row.innerHTML = '<span class="label">'+c.canal+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(c.venta)+'</span>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+(i===0?accent:'var(--text-muted)')+'"></div></div>' +
+        '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtLitros(c.litros)+'</span></div>';
+      el.appendChild(row);
+    });
+    if (!list.length){
+      el.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px;">Sin datos suficientes.</p>';
+    }
+  }
+
+  // region toggle
+  document.getElementById('regionToggle').addEventListener('click', function(e){
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    state.regionView = btn.dataset.view;
+    markActive(document.getElementById('regionToggle'), 'view', state.regionView);
+    renderRegions();
+  });
+
+  // re-render on brand seg click needs delegation since buildBrandSeg rebuilds it, handled by inline onclick above; keep active state sync:
+  document.getElementById('brandSeg').addEventListener('click', function(e){
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    markActive(document.getElementById('brandSeg'), 'brand', btn.dataset.brand);
+  });
+})();
+</script>
+
+</body>
+</html>
