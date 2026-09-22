@@ -865,17 +865,17 @@
     var series26 = months.map(function(_,i){ var m = findMonth(monthly, 2026, i+1); return m ? m[unit] : null; });
 
     // accumulated (YTD) side panel, next to the chart
-    var y = getYTD(state.brand);
+    var ytd = getYTD(state.brand);
     var accumEl = document.getElementById('trendAccum');
-    if (!y){
+    if (!ytd){
       accumEl.innerHTML = '<span style="font-size:12px;color:var(--text-muted);">Sin datos suficientes.</span>';
     } else {
-      var cCls = y.c9l_var_pct===null ? 'flat' : (y.c9l_var_pct>=0.05?'up':(y.c9l_var_pct<-0.05?'down':'flat'));
+      var cCls = ytd.c9l_var_pct===null ? 'flat' : (ytd.c9l_var_pct>=0.05?'up':(ytd.c9l_var_pct<-0.05?'down':'flat'));
       accumEl.innerHTML =
-        '<span style="font-size:12px;color:var(--text-muted);">Acumulado '+y.anio_actual+' (ene–'+y.hasta_mes.toLowerCase()+')</span>' +
-        '<div style="font-size:22px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;margin:4px 0 6px;">'+fmtC9L(y.c9l_actual)+'</div>' +
-        '<span class="chip '+cCls+'">'+(cCls==='up'?'▲':cCls==='down'?'▼':'—')+' '+fmtPct(y.c9l_var_pct)+' vs '+(y.anio_actual-1)+'</span>' +
-        '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;">'+(y.anio_actual-1)+': '+fmtC9L(y.c9l_anterior)+'</div>';
+        '<span style="font-size:12px;color:var(--text-muted);">Acumulado '+ytd.anio_actual+' (ene–'+ytd.hasta_mes.toLowerCase()+')</span>' +
+        '<div style="font-size:22px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;margin:4px 0 6px;">'+fmtC9L(ytd.c9l_actual)+'</div>' +
+        '<span class="chip '+cCls+'">'+(cCls==='up'?'▲':cCls==='down'?'▼':'—')+' '+fmtPct(ytd.c9l_var_pct)+' vs '+(ytd.anio_actual-1)+'</span>' +
+        '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;">'+(ytd.anio_actual-1)+': '+fmtC9L(ytd.c9l_anterior)+'</div>';
     }
 
     var allVals = series25.concat(series26).filter(function(v){return v!==null;});
