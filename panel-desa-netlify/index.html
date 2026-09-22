@@ -1,9 +1,4 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Panel DESA</title>
+<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Panel DESA</title>
 <meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -250,6 +245,37 @@
   .sev-dot.good{background:var(--good);}
   td.sev-cell{display:flex;align-items:center;gap:7px;}
 
+  /* month picker + filter selects */
+  .month-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .month-chip{
+    border:1px solid var(--border);background:var(--surface-2);color:var(--text-secondary);
+    font:inherit;font-size:12px;font-weight:500;padding:6px 12px;border-radius:100px;cursor:pointer;
+  }
+  .month-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .month-chip.all{font-weight:600;}
+  .filters-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .select-control{
+    appearance:none;border:1px solid var(--border);background:var(--surface-2);color:var(--text-primary);
+    font:inherit;font-size:12.5px;font-weight:500;padding:7px 30px 7px 12px;border-radius:8px;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23898781'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;
+  }
+  .drop-cell{color:var(--critical);font-weight:600;}
+  .canal-tag{font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.03em;}
+
+  /* view tabs (Volúmenes / Inventario / Tránsito) */
+  .view-tabs-wrap{display:flex;justify-content:center;}
+  .view-section{display:flex;flex-direction:column;gap:20px;}
+  .view-section[hidden]{display:none;}
+  .nivel-badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:100px;white-space:nowrap;}
+  .nivel-badge.quiebre{background:var(--critical-soft);color:var(--critical);}
+  .nivel-badge.bajo{background:var(--warning-soft);color:var(--warning);}
+  .nivel-badge.normal{background:var(--good-soft);color:var(--good);}
+  .nivel-badge.alto{background:var(--accent-soft);color:var(--accent);}
+  .nivel-badge.sin_movimiento{background:var(--surface-2);color:var(--text-muted);}
+  .inv-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .inv-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+
   footer{text-align:center;font-size:11.5px;color:var(--text-muted);padding-top:6px;}
 
   @media (max-width:820px){
@@ -262,16 +288,13 @@
   }
 </style>
 
-
-</head>
-<body>
-<div class="wrap">
+</head><body><div class="wrap">
 
   <section class="hero theme-neutral" id="hero">
     <div class="hero-left">
       <span class="hero-badge" id="heroBadge">Panel de marcas · DESA</span>
       <h1 class="wordmark font-default" id="brandTitle">Cargando…</h1>
-      <p class="hero-tag" id="heroTag">Ventas, stock e insights</p>
+      <p class="hero-tag" id="heroTag">Ventas, stock y clientes</p>
     </div>
     <div class="hero-right">
       <div class="seg" id="brandSeg" role="tablist" aria-label="Marca"></div>
@@ -279,27 +302,49 @@
     </div>
   </section>
 
+  <div class="view-tabs-wrap">
+    <div class="seg" id="viewSeg" role="tablist" aria-label="Vista"></div>
+  </div>
+
+  <div class="view-section" id="viewVolumenes">
+
   <section class="kpis" id="kpiRow"></section>
 
-  <section class="grid2">
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Ventas mensuales · 2025 vs 2026</h2>
-          <p class="sub" id="trendSub">Comparación mes a mes en pesos (CLP)</p>
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Ventas mensuales · 2025 vs 2026</h2>
+        <p class="sub" id="trendSub">Comparación mes a mes</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span class="chip flat" id="momChip">—</span>
+        <div class="mini-toggle" id="unitToggle">
+          <button data-unit="venta" class="active">Venta ($)</button>
+          <button data-unit="c9l">C9L</button>
         </div>
       </div>
-      <div class="chart-wrap">
-        <svg class="chart" id="trendChart" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg>
-        <div class="tooltip" id="trendTooltip"></div>
-      </div>
-      <div class="legend" id="trendLegend"></div>
     </div>
+    <div class="chart-wrap">
+      <svg class="chart" id="trendChart" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="tooltip" id="trendTooltip"></div>
+    </div>
+    <div class="legend" id="trendLegend"></div>
+  </section>
 
+  <section class="grid2b">
     <div class="card">
       <div class="card-head">
         <div>
-          <h2>Agosto 2025 vs Agosto 2026</h2>
+          <h2>Acumulado del año (YTD)</h2>
+          <p class="sub" id="ytdSub">Enero a agosto, vs mismo período 2025</p>
+        </div>
+      </div>
+      <div id="ytdBody"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2 id="yoyTitle">Agosto 2025 vs Agosto 2026</h2>
           <p class="sub">Cierre de mes, comparación interanual</p>
         </div>
       </div>
@@ -308,16 +353,6 @@
       </div>
       <div id="yoySummary" style="margin-top:8px;"></div>
     </div>
-  </section>
-
-  <section class="card">
-    <div class="card-head">
-      <div>
-        <h2>Insights automáticos</h2>
-        <p class="sub">Lecturas generadas a partir de los datos cargados</p>
-      </div>
-    </div>
-    <div class="insights" id="insightsList"></div>
   </section>
 
   <section class="grid2b">
@@ -370,36 +405,61 @@
     </div>
   </section>
 
-  <section class="grid2b">
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Ventas por canal</h2>
-          <p class="sub">On trade vs off trade</p>
-        </div>
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Ventas por canal</h2>
+        <p class="sub">On trade vs off trade</p>
       </div>
-      <div class="barlist" id="canalList"></div>
     </div>
+    <div class="barlist" id="canalList"></div>
+  </section>
 
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <h2>Stock por bodega</h2>
-          <p class="sub" id="stockBodegaSub">Stock físico disponible, unidades</p>
-        </div>
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Ventas por SKU y canal</h2>
+        <p class="sub" id="skuCanalSub">Seleccioná uno o varios meses para comparar contra el mismo período del año anterior</p>
       </div>
-      <div class="barlist" id="stockBodegaList"></div>
+    </div>
+    <div class="month-picker" id="skuMonthPicker"></div>
+    <div class="table-scroll">
+      <table id="skuCanalTable"></table>
     </div>
   </section>
 
   <section class="card">
     <div class="card-head">
       <div>
-        <h2>Stock en tránsito</h2>
-        <p class="sub" id="transitSub">Unidades ya despachadas, en camino a su bodega destino (bodegas "TRAN-")</p>
+        <h2>Clientes caídos</h2>
+        <p class="sub" id="clientesSub">Comparación de compra de un mismo mes, año contra año</p>
+      </div>
+      <div class="filters-row">
+        <select class="select-control" id="clientesMonthSelect"></select>
+        <select class="select-control" id="clientesCanalSelect">
+          <option value="TODOS">Todos los canales</option>
+          <option value="ON TRADE">On trade</option>
+          <option value="OFF TRADE">Off trade</option>
+        </select>
       </div>
     </div>
-    <div id="transitBody"></div>
+    <div class="table-scroll">
+      <table id="clientesTable"></table>
+    </div>
+  </section>
+
+  </div><!-- /viewVolumenes -->
+
+  <div class="view-section" id="viewInventario" hidden>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Stock por bodega</h2>
+        <p class="sub" id="stockBodegaSub">Stock físico disponible, unidades</p>
+      </div>
+    </div>
+    <div class="barlist" id="stockBodegaList"></div>
   </section>
 
   <section class="card">
@@ -412,13 +472,53 @@
     <div id="stockAlertBody"></div>
   </section>
 
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Detalle de inventario por sucursal y SKU</h2>
+        <p class="sub" id="invDetailSub">Stock físico, venta promedio mensual (últimos 3 meses cerrados) y meses de cobertura</p>
+      </div>
+    </div>
+    <div class="inv-summary" id="invSummary"></div>
+    <div class="inv-filters">
+      <select class="select-control" id="invBodegaSelect"><option value="TODAS">Todas las sucursales</option></select>
+      <select class="select-control" id="invNivelSelect">
+        <option value="TODOS">Todos los estados</option>
+        <option value="quiebre">Quiebre</option>
+        <option value="bajo">Cobertura baja</option>
+        <option value="normal">Normal</option>
+        <option value="alto">Sobre stock</option>
+        <option value="sin_movimiento">Sin movimiento</option>
+      </select>
+    </div>
+    <div class="table-scroll">
+      <table id="invDetailTable"></table>
+    </div>
+  </section>
+
+  </div><!-- /viewInventario -->
+
+  <div class="view-section" id="viewTransito" hidden>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Stock en tránsito</h2>
+        <p class="sub" id="transitSub">Unidades ya despachadas, en camino a su bodega destino (bodegas "TRAN-")</p>
+      </div>
+    </div>
+    <div id="transitBody"></div>
+  </section>
+
+  </div><!-- /viewTransito -->
+
   <footer>Datos: ventas facturadas 2025–2026 · Stolichnaya con histórico completo · Buhero Negro desde agosto 2026 · Stock físico al 22-09-2026</footer>
 </div>
 
 <script>
 (function(){
   var DATA = null;
-  var state = { brand: null, regionView: 'ciudad' };
+  var state = { brand: null, view: 'volumenes', regionView: 'ciudad', unit: 'venta', skuMonths: [], clientesMonth: null, clientesCanal: 'TODOS', invBodega: 'TODAS', invNivel: 'TODOS' };
   var TRAN_LABELS = {
     'TRAN-VIÑA': 'Viña del Mar', 'TRAN-PUNTA ARENA': 'Punta Arenas', 'TRAN-PTOMONTT': 'Puerto Montt',
     'TRAN-TEMUCO': 'Temuco', 'TRAN-SERENA': 'La Serena', 'TRAN-COPIAPO': 'Copiapó', 'TRAN-ARICA': 'Arica',
@@ -431,17 +531,17 @@
     'STOLICHNAYA': {
       color: 'var(--stoli)', soft: 'var(--stoli-soft)', label: 'Stolichnaya',
       heroClass: 'theme-stoli', wordFont: 'font-script', wordText: 'Stoli',
-      badge: 'Marca · Vodka', tag: 'Ventas, stock e insights en tiempo real'
+      badge: 'Marca · Vodka', tag: 'Ventas, stock y clientes'
     },
     'BUHERO NEGRO': {
       color: 'var(--buhero)', soft: 'var(--buhero-soft)', label: 'Buhero Negro',
       heroClass: 'theme-buhero', wordFont: 'font-badge', wordText: 'Buhero Negro',
-      badge: 'Marca · Fernet', tag: 'Ventas, stock e insights en tiempo real'
+      badge: 'Marca · Fernet', tag: 'Ventas, stock y clientes'
     },
     'AMBAS': {
       color: 'var(--accent)', soft: 'var(--accent-soft)', label: 'Ambas marcas',
       heroClass: 'theme-neutral', wordFont: 'font-default', wordText: 'Ambas marcas',
-      badge: 'Panel de marcas · DESA', tag: 'Ventas, stock e insights en tiempo real'
+      badge: 'Panel de marcas · DESA', tag: 'Ventas, stock y clientes'
     }
   };
 
@@ -449,9 +549,9 @@
     if (n === null || n === undefined || isNaN(n)) return '—';
     return '$' + Math.round(n).toLocaleString('es-CL');
   }
-  function fmtLitros(n){
+  function fmtC9L(n){
     if (n === null || n === undefined || isNaN(n)) return '—';
-    return Math.round(n).toLocaleString('es-CL') + ' L';
+    return n.toLocaleString('es-CL', {maximumFractionDigits:1}) + ' c9l';
   }
   function fmtPct(n){
     if (n === null || n === undefined || isNaN(n)) return '—';
@@ -465,8 +565,14 @@
   fetch('data.json').then(function(r){ return r.json(); }).then(function(d){
     DATA = d;
     state.brand = 'STOLICHNAYA';
+    state.skuMonths = [d.meta.last_closed.mes];
+    state.clientesMonth = d.meta.last_closed.mes;
     document.getElementById('asof').textContent = 'Actualizado al ' + (d.meta && d.meta.current_partial ? d.meta.current_partial.asof.split('-').reverse().join('-') : d.meta.generated);
     buildBrandSeg();
+    buildViewSeg();
+    buildMonthPicker();
+    buildClientesControls();
+    buildInvControls();
     render();
   }).catch(function(err){
     document.getElementById('brandTitle').textContent = 'No se pudo cargar la información';
@@ -488,6 +594,33 @@
     });
   }
 
+  function buildViewSeg(){
+    var seg = document.getElementById('viewSeg');
+    var opts = [['volumenes','Volúmenes'], ['inventario','Inventario'], ['transito','Tránsito']];
+    seg.innerHTML = '';
+    opts.forEach(function(o){
+      var b = document.createElement('button');
+      b.textContent = o[1];
+      b.dataset.view = o[0];
+      b.className = (o[0]===state.view) ? 'active' : '';
+      b.setAttribute('role','tab');
+      b.onclick = function(){
+        state.view = o[0];
+        markActive(seg, 'view', state.view);
+        showActiveView();
+        render();
+      };
+      seg.appendChild(b);
+    });
+  }
+
+  function showActiveView(){
+    ['volumenes','inventario','transito'].forEach(function(v){
+      var el = document.getElementById('view' + v.charAt(0).toUpperCase() + v.slice(1));
+      if (el) el.hidden = (v !== state.view);
+    });
+  }
+
   function markActive(container, attr, val){
     Array.prototype.forEach.call(container.children, function(c){
       c.className = (c.dataset[attr] === val) ? 'active' : '';
@@ -501,11 +634,13 @@
       ['STOLICHNAYA','BUHERO NEGRO'].forEach(function(m){
         (DATA.monthly[m]||[]).forEach(function(r){
           var k = r.anio+'-'+r.mes;
-          if(!map[k]) map[k] = {anio:r.anio, mes:r.mes, mes_nombre:r.mes_nombre, venta:0, litros:0, cantidad:0};
-          map[k].venta += r.venta; map[k].litros += r.litros; map[k].cantidad += r.cantidad;
+          if(!map[k]) map[k] = {anio:r.anio, mes:r.mes, mes_nombre:r.mes_nombre, venta:0, litros:0, c9l:0, cantidad:0};
+          map[k].venta += r.venta; map[k].litros += r.litros; map[k].c9l += r.c9l; map[k].cantidad += r.cantidad;
         });
       });
-      return Object.keys(map).map(function(k){return map[k];}).sort(function(a,b){ return (a.anio*12+a.mes)-(b.anio*12+b.mes); });
+      var arr = Object.keys(map).map(function(k){return map[k];}).sort(function(a,b){ return (a.anio*12+a.mes)-(b.anio*12+b.mes); });
+      arr.forEach(function(a){ a.c9l = Math.round(a.c9l*100)/100; });
+      return arr;
     }
     return (DATA.monthly[brand]||[]).slice().sort(function(a,b){ return (a.anio*12+a.mes)-(b.anio*12+b.mes); });
   }
@@ -515,13 +650,29 @@
       ['STOLICHNAYA','BUHERO NEGRO'].forEach(function(m){
         (DATA[section][m]||[]).forEach(function(r){
           var key = section==='products' ? r.producto : (section==='ciudad' ? r.ciudad : (section==='bodega'? r.bodega : r.canal));
-          if(!map[key]){ map[key] = Object.assign({}, r); map[key].venta=0; map[key].litros=0; order.push(key); }
-          map[key].venta += r.venta; map[key].litros += r.litros || 0;
+          if(!map[key]){ map[key] = Object.assign({}, r); map[key].venta=0; map[key].litros=0; map[key].c9l=0; order.push(key); }
+          map[key].venta += r.venta; map[key].litros += r.litros || 0; map[key].c9l += r.c9l || 0;
         });
       });
       return order.map(function(k){return map[k];}).sort(function(a,b){return b.venta-a.venta;});
     }
     return (DATA[section][brand]||[]).slice().sort(function(a,b){return b.venta-a.venta;});
+  }
+  function getYTD(brand){
+    if (!DATA.ytd) return null;
+    if (brand === 'AMBAS'){
+      var parts = ['STOLICHNAYA','BUHERO NEGRO'].map(function(m){ return DATA.ytd[m]; }).filter(Boolean);
+      if (!parts.length) return null;
+      var va=0, vb=0, ca=0, cb=0;
+      parts.forEach(function(p){ va+=p.venta_actual; vb+=p.venta_anterior; ca+=p.c9l_actual; cb+=p.c9l_anterior; });
+      return {
+        hasta_mes: parts[0].hasta_mes, anio_actual: parts[0].anio_actual,
+        venta_actual: va, venta_anterior: vb, c9l_actual: Math.round(ca*100)/100, c9l_anterior: Math.round(cb*100)/100,
+        venta_var_pct: vb ? Math.round((va-vb)/vb*1000)/10 : null,
+        c9l_var_pct: cb ? Math.round((ca-cb)/cb*1000)/10 : null
+      };
+    }
+    return DATA.ytd[brand] || null;
   }
   function findMonth(series, anio, mes){
     for (var i=0;i<series.length;i++){ if(series[i].anio===anio && series[i].mes===mes) return series[i]; }
@@ -539,17 +690,24 @@
     document.getElementById('heroBadge').textContent = meta.badge;
     document.getElementById('heroTag').textContent = meta.tag;
 
+    showActiveView();
+
     var monthly = getMonthly(state.brand);
     renderKPIs(monthly);
     renderTrend(monthly, meta);
+    renderYTD(meta);
     renderYoY(monthly, meta);
-    renderInsights(monthly, meta);
     renderProducts();
     renderRegions();
     renderCanal(meta);
+    renderSkuCanal(meta);
+    renderClientes(meta);
+
     renderStockBodega(meta);
-    renderTransit(meta);
     renderStockAlerts(meta);
+    renderInventoryDetail(meta);
+
+    renderTransit(meta);
   }
 
   function getTransitDetail(brand){
@@ -573,13 +731,93 @@
       return;
     }
     sub.textContent = Math.round(totalTransit).toLocaleString('es-CL') + ' unidades despachadas, en camino a su bodega destino';
-    var html = '<div class="table-scroll"><table><thead><tr><th>Destino</th><th>Producto</th><th class="num">Unidades en camino</th></tr></thead><tbody>';
+    var html = '<div class="table-scroll"><table><thead><tr><th>Destino</th><th>Producto</th><th class="num">En camino</th><th class="num">Stock ya en destino (mismo SKU)</th><th class="num">Stock total destino</th></tr></thead><tbody>';
     rows.forEach(function(r){
-      html += '<tr><td>'+tranLabel(r.bodega_destino)+'</td>' +
+      var destLabel = r.bodega_real || tranLabel(r.bodega_destino);
+      var skuDest = (r.stock_actual_sku_destino===undefined || r.stock_actual_sku_destino===null) ? '—' : Math.round(r.stock_actual_sku_destino).toLocaleString('es-CL')+' un.';
+      var totalDest = (r.stock_total_destino===undefined || r.stock_total_destino===null) ? '—' : Math.round(r.stock_total_destino).toLocaleString('es-CL')+' un.';
+      html += '<tr><td>'+destLabel+'</td>' +
         '<td class="name">'+(r.glosa||r.producto)+'<span class="prod-code">'+r.producto+(state.brand==='AMBAS'?' · '+r.marca:'')+'</span></td>' +
-        '<td class="num">'+Math.round(r.unidades).toLocaleString('es-CL')+' un.</td></tr>';
+        '<td class="num">'+Math.round(r.unidades).toLocaleString('es-CL')+' un.</td>' +
+        '<td class="num" style="color:var(--text-secondary)">'+skuDest+'</td>' +
+        '<td class="num" style="color:var(--text-muted)">'+totalDest+'</td></tr>';
     });
     html += '</tbody></table></div>';
+    body.innerHTML = html;
+  }
+
+  // ---------- Inventario detail (por sucursal x SKU) ----------
+  function getInventoryDetail(brand){
+    if (!DATA.stock || !DATA.stock.inventory_detail) return [];
+    var rows = DATA.stock.inventory_detail;
+    if (brand === 'AMBAS') return rows.slice();
+    return rows.filter(function(r){ return r.marca === brand; });
+  }
+
+  function buildInvControls(){
+    var bodSel = document.getElementById('invBodegaSelect');
+    bodSel.addEventListener('change', function(){ state.invBodega = bodSel.value; renderInventoryDetail(BRAND_META[state.brand]); });
+    document.getElementById('invNivelSelect').addEventListener('change', function(e){
+      state.invNivel = e.target.value; renderInventoryDetail(BRAND_META[state.brand]);
+    });
+  }
+
+  var NIVEL_LABELS = { quiebre:'Quiebre', bajo:'Cobertura baja', normal:'Normal', alto:'Sobre stock', sin_movimiento:'Sin movimiento' };
+
+  function renderInventoryDetail(meta){
+    var all = getInventoryDetail(state.brand);
+    var body = document.getElementById('invDetailTable');
+    var sub = document.getElementById('invDetailSub');
+
+    if (!DATA.stock){
+      document.getElementById('invSummary').innerHTML = '';
+      body.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Sin datos de stock cargados todavía.</td></tr></tbody>';
+      return;
+    }
+
+    // populate bodega select (once per brand change) preserving current selection if still valid
+    var bodSel = document.getElementById('invBodegaSelect');
+    var bodegas = Array.prototype.slice.call(new Set(all.map(function(r){return r.bodega;}))).sort();
+    var currentOpts = Array.prototype.map.call(bodSel.options, function(o){return o.value;});
+    if (currentOpts.length !== bodegas.length + 1 || currentOpts.indexOf(state.invBodega) < 0){
+      bodSel.innerHTML = '<option value="TODAS">Todas las sucursales</option>' + bodegas.map(function(b){return '<option value="'+b+'">'+b+'</option>';}).join('');
+      bodSel.value = (bodegas.indexOf(state.invBodega)>=0) ? state.invBodega : 'TODAS';
+      state.invBodega = bodSel.value;
+    }
+
+    var counts = {quiebre:0, bajo:0, normal:0, alto:0, sin_movimiento:0};
+    all.forEach(function(r){ counts[r.nivel] = (counts[r.nivel]||0)+1; });
+    var summaryHtml = '';
+    ['quiebre','bajo','normal','alto','sin_movimiento'].forEach(function(n){
+      if (counts[n]) summaryHtml += '<span class="nivel-badge '+n+'">'+counts[n]+' '+NIVEL_LABELS[n]+'</span>';
+    });
+    document.getElementById('invSummary').innerHTML = summaryHtml;
+
+    var rows = all.filter(function(r){
+      return (state.invBodega==='TODAS' || r.bodega===state.invBodega) && (state.invNivel==='TODOS' || r.nivel===state.invNivel);
+    });
+
+    var order = {quiebre:0, bajo:1, sin_movimiento:2, normal:3, alto:4};
+    rows = rows.slice().sort(function(a,b){ return order[a.nivel]-order[b.nivel] || b.stock-a.stock; });
+
+    sub.textContent = 'Stock físico por sucursal y SKU, con meses de cobertura según venta de los últimos 3 meses cerrados (' + rows.length + ' de ' + all.length + ' filas)';
+
+    if (!rows.length){
+      body.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Sin filas para el filtro seleccionado.</td></tr></tbody>';
+      return;
+    }
+
+    var html = '<thead><tr><th>Estado</th><th>Sucursal</th><th>Producto</th><th class="num">Stock</th><th class="num">Venta prom./mes</th><th class="num">Meses cobertura</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      var covText = (r.meses_cobertura===null || r.meses_cobertura===undefined) ? '—' : (r.meses_cobertura>=100 ? '99+' : r.meses_cobertura.toFixed(1));
+      html += '<tr><td><span class="nivel-badge '+r.nivel+'">'+NIVEL_LABELS[r.nivel]+'</span></td>' +
+        '<td>'+r.bodega+'</td>' +
+        '<td class="name">'+(r.glosa||r.producto)+'<span class="prod-code">'+r.producto+(state.brand==='AMBAS'?' · '+r.marca:'')+'</span></td>' +
+        '<td class="num">'+Math.round(r.stock).toLocaleString('es-CL')+' un.</td>' +
+        '<td class="num">'+(r.avg_monthly||0).toLocaleString('es-CL')+' un.</td>' +
+        '<td class="num">'+covText+'</td></tr>';
+    });
+    html += '</tbody>';
     body.innerHTML = html;
   }
 
@@ -694,10 +932,10 @@
         chipText: mYoY ? ('2025: ' + fmtCLP(mYoY.venta)) : 'Marca sin historial 2025',
       },
       {
-        label: 'Litros · ' + closed.nombre,
-        value: mClosed ? fmtLitros(mClosed.litros) : '—',
+        label: 'C9L · ' + closed.nombre,
+        value: mClosed ? fmtC9L(mClosed.c9l) : '—',
         chip: null,
-        chipText: partial.nombre + ' (parcial): ' + (mPartial? fmtLitros(mPartial.litros) : '—'),
+        chipText: partial.nombre + ' (parcial): ' + (mPartial? fmtC9L(mPartial.c9l) : '—'),
       },
       {
         label: 'SKUs con venta registrada',
@@ -722,8 +960,25 @@
     var svg = document.getElementById('trendChart');
     var W = 640, H = 260, padL = 44, padR = 12, padT = 14, padB = 26;
     var months = DATA.meses;
-    var series25 = months.map(function(_,i){ var m = findMonth(monthly, 2025, i+1); return m ? m.venta : null; });
-    var series26 = months.map(function(_,i){ var m = findMonth(monthly, 2026, i+1); return m ? m.venta : null; });
+    var unit = state.unit; // 'venta' or 'c9l'
+    var series25 = months.map(function(_,i){ var m = findMonth(monthly, 2025, i+1); return m ? m[unit] : null; });
+    var series26 = months.map(function(_,i){ var m = findMonth(monthly, 2026, i+1); return m ? m[unit] : null; });
+
+    // MoM chip for the last closed month, in the currently selected unit
+    var closed = DATA.meta.last_closed;
+    var mClosed = findMonth(monthly, closed.anio, closed.mes);
+    var mPrev = mClosed ? findMonth(monthly, closed.mes===1?closed.anio-1:closed.anio, closed.mes===1?12:closed.mes-1) : null;
+    var momChip = document.getElementById('momChip');
+    if (mClosed && mPrev && mPrev[unit]){
+      var momPct = (mClosed[unit]-mPrev[unit])/mPrev[unit]*100;
+      var cls = momPct>=0.05?'up':(momPct<-0.05?'down':'flat');
+      momChip.className = 'chip '+cls;
+      momChip.textContent = (cls==='up'?'▲':cls==='down'?'▼':'—') + ' ' + fmtPct(momPct) + ' vs mes anterior';
+    } else {
+      momChip.className = 'chip flat';
+      momChip.textContent = 'Sin mes anterior para comparar';
+    }
+
     var allVals = series25.concat(series26).filter(function(v){return v!==null;});
     var maxV = allVals.length ? Math.max.apply(null, allVals) : 1;
     maxV = maxV * 1.12 || 1;
@@ -797,7 +1052,7 @@
         if(!m) return;
         tooltip.innerHTML = '<div class="t-title">'+m.mes_nombre+' '+year+'</div>' +
           '<div class="t-row"><span>Venta</span><span class="num">'+fmtCLP(m.venta)+'</span></div>' +
-          '<div class="t-row"><span>Litros</span><span class="num">'+fmtLitros(m.litros)+'</span></div>';
+          '<div class="t-row"><span>C9L</span><span class="num">'+fmtC9L(m.c9l)+'</span></div>';
         var rect = dot.getBoundingClientRect();
         var wrapRect = svg.parentElement.getBoundingClientRect();
         tooltip.style.left = (rect.left - wrapRect.left + rect.width/2) + 'px';
@@ -818,8 +1073,43 @@
     return Math.round(v);
   }
 
+  function renderYTD(meta){
+    var y = getYTD(state.brand);
+    var body = document.getElementById('ytdBody');
+    var sub = document.getElementById('ytdSub');
+    if (!y){
+      sub.textContent = 'Sin datos suficientes.';
+      body.innerHTML = '';
+      return;
+    }
+    sub.textContent = 'Enero a ' + y.hasta_mes.toLowerCase() + ', vs mismo período ' + (y.anio_actual-1);
+    var vCls = y.venta_var_pct===null ? 'flat' : (y.venta_var_pct>=0.05?'up':(y.venta_var_pct<-0.05?'down':'flat'));
+    var cCls = y.c9l_var_pct===null ? 'flat' : (y.c9l_var_pct>=0.05?'up':(y.c9l_var_pct<-0.05?'down':'flat'));
+    body.innerHTML =
+      '<div style="display:flex;flex-direction:column;gap:14px;">' +
+        '<div>' +
+          '<span class="label" style="font-size:12px;color:var(--text-muted);">Venta acumulada '+y.anio_actual+'</span>' +
+          '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px;">' +
+            '<span class="value" style="font-size:22px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(y.venta_actual)+'</span>' +
+            '<span class="chip '+vCls+'">'+(vCls==='up'?'▲':vCls==='down'?'▼':'—')+' '+fmtPct(y.venta_var_pct)+'</span>' +
+          '</div>' +
+          '<span style="font-size:11.5px;color:var(--text-muted);">'+(y.anio_actual-1)+': '+fmtCLP(y.venta_anterior)+'</span>' +
+        '</div>' +
+        '<div>' +
+          '<span class="label" style="font-size:12px;color:var(--text-muted);">C9L acumulados '+y.anio_actual+'</span>' +
+          '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px;">' +
+            '<span class="value" style="font-size:22px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;">'+fmtC9L(y.c9l_actual)+'</span>' +
+            '<span class="chip '+cCls+'">'+(cCls==='up'?'▲':cCls==='down'?'▼':'—')+' '+fmtPct(y.c9l_var_pct)+'</span>' +
+          '</div>' +
+          '<span style="font-size:11.5px;color:var(--text-muted);">'+(y.anio_actual-1)+': '+fmtC9L(y.c9l_anterior)+'</span>' +
+        '</div>' +
+      '</div>';
+  }
+
   function renderYoY(monthly, meta){
     var closed = DATA.meta.last_closed;
+    var mesName = closed.nombre.split(' ')[0];
+    document.getElementById('yoyTitle').textContent = mesName + ' ' + (closed.anio-1) + ' vs ' + mesName + ' ' + closed.anio;
     var m26 = findMonth(monthly, closed.anio, closed.mes);
     var m25 = findMonth(monthly, closed.anio-1, closed.mes);
     var svg = document.getElementById('yoyChart');
@@ -854,74 +1144,6 @@
     }
   }
 
-  function renderInsights(monthly, meta){
-    var list = document.getElementById('insightsList');
-    var insights = [];
-    var closed = DATA.meta.last_closed;
-    var m26 = findMonth(monthly, closed.anio, closed.mes);
-    var m25 = findMonth(monthly, closed.anio-1, closed.mes);
-    var prev = findMonth(monthly, closed.mes===1?closed.anio-1:closed.anio, closed.mes===1?12:closed.mes-1);
-
-    if (m26 && m25){
-      var d = (m26.venta-m25.venta)/m25.venta*100;
-      insights.push({
-        icon: d>=0?'good':'critical', symbol: d>=0?'▲':'▼',
-        html: (d>=0?'Crecimiento interanual':'Caída interanual')+' de <strong>'+fmtPct(d)+'</strong> en '+closed.nombre+' comparado con el mismo mes de 2025 ('+fmtCLP(m25.venta)+' → '+fmtCLP(m26.venta)+').'
-      });
-    } else if (m26) {
-      insights.push({ icon:'warning', symbol:'!', html: closed.nombre+' registró <strong>'+fmtCLP(m26.venta)+'</strong> en ventas — todavía sin base 2025 para comparar (marca en construcción).' });
-    }
-    if (m26 && prev){
-      var dm = (m26.venta-prev.venta)/prev.venta*100;
-      insights.push({
-        icon: dm>=0?'good':'warning', symbol: dm>=0?'▲':'▼',
-        html: 'Variación mes a mes de <strong>'+fmtPct(dm)+'</strong> entre '+prev.mes_nombre+' y '+closed.nombre+'.'
-      });
-    }
-
-    var prods = getList('products', state.brand).filter(function(p){return p.venta>0;});
-    if (prods.length){
-      var totalVenta = prods.reduce(function(a,p){return a+p.venta;},0);
-      var top = prods[0];
-      var share = totalVenta>0 ? (top.venta/totalVenta*100) : 0;
-      insights.push({
-        icon:'accent', symbol:'★',
-        html: '<strong>'+(top.glosa||top.producto)+'</strong> concentra el <strong>'+share.toFixed(1)+'%</strong> de la venta acumulada de '+meta.label+' entre '+prods.length+' SKU'+(prods.length===1?'':'s')+' con movimiento.'
-      });
-      if (prods.length > 1){
-        var bottom = prods[prods.length-1];
-        insights.push({ icon:'muted', symbol:'i', html: 'El producto con menor venta registrada es <strong>'+(bottom.glosa||bottom.producto)+'</strong>, con '+fmtCLP(bottom.venta)+' acumulados.' });
-      }
-    }
-
-    var cities = getList('ciudad', state.brand).filter(function(c){return c.venta>0;});
-    if (cities.length){
-      var totalC = cities.reduce(function(a,c){return a+c.venta;},0);
-      insights.push({ icon:'accent', symbol:'📍', html: '<strong>'+cities[0].ciudad+'</strong> es la ciudad con más movimiento, con el '+(cities[0].venta/totalC*100).toFixed(1)+'% de la venta.' });
-    }
-
-    var stockAlerts = getStockAlerts(state.brand);
-    var criticalStock = stockAlerts.filter(function(a){return a.level==='critical';});
-    if (criticalStock.length){
-      var names = criticalStock.slice(0,3).map(function(a){return a.glosa||a.producto;}).join(', ');
-      insights.push({ icon:'critical', symbol:'!', html: '<strong>'+criticalStock.length+' producto'+(criticalStock.length===1?'':'s')+' en quiebre de stock</strong> con venta activa reciente: '+names+(criticalStock.length>3?'…':'')+'.' });
-    }
-
-    list.innerHTML = '';
-    if (!insights.length){
-      list.innerHTML = '<div class="insight"><p>Todavía no hay suficientes datos para generar insights de esta marca.</p></div>';
-      return;
-    }
-    var iconBg = {good:'var(--good-soft)', critical:'var(--critical-soft)', warning:'var(--warning-soft)', accent:'var(--accent-soft)', muted:'var(--surface-2)'};
-    var iconColor = {good:'var(--good)', critical:'var(--critical)', warning:'var(--warning)', accent:'var(--accent)', muted:'var(--text-muted)'};
-    insights.forEach(function(ins){
-      var el = document.createElement('div');
-      el.className = 'insight';
-      el.innerHTML = '<span class="ic" style="background:'+iconBg[ins.icon]+';color:'+iconColor[ins.icon]+'">'+ins.symbol+'</span><p>'+ins.html+'</p>';
-      list.appendChild(el);
-    });
-  }
-
   function renderProducts(){
     var prods = getList('products', state.brand).filter(function(p){return p.venta>0;});
     var total = prods.reduce(function(a,p){return a+p.venta;},0) || 1;
@@ -929,10 +1151,10 @@
     var bottom = prods.slice(-5).reverse();
 
     function buildTable(rows, el){
-      var html = '<thead><tr><th>Producto</th><th class="num">Venta</th><th class="num">Litros</th><th class="num">% part.</th></tr></thead><tbody>';
+      var html = '<thead><tr><th>Producto</th><th class="num">Venta</th><th class="num">C9L</th><th class="num">% part.</th></tr></thead><tbody>';
       rows.forEach(function(p, i){
         html += '<tr><td class="name"><span class="rank-badge">'+(i+1)+'</span>'+(p.glosa||p.producto)+'<span class="prod-code">'+p.producto+'</span></td>' +
-          '<td class="num">'+fmtCLP(p.venta)+'</td><td class="num">'+fmtLitros(p.litros)+'</td><td class="num">'+(p.venta/total*100).toFixed(1)+'%</td></tr>';
+          '<td class="num">'+fmtCLP(p.venta)+'</td><td class="num">'+fmtC9L(p.c9l)+'</td><td class="num">'+(p.venta/total*100).toFixed(1)+'%</td></tr>';
       });
       html += '</tbody>';
       el.innerHTML = html;
@@ -964,7 +1186,7 @@
         row.className = 'bar-row';
         row.innerHTML = '<span class="label">'+name+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(r.venta)+'</span>' +
           '<div class="bar-track"><div class="bar-fill" style="width:'+Math.max(pct,1.5)+'%;background:'+(muted?'var(--text-muted)':accent)+';opacity:'+(muted?'0.55':'1')+'"></div></div>' +
-          '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtLitros(r.litros)+'</span></div>';
+          '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtC9L(r.c9l)+'</span></div>';
         el.appendChild(row);
       });
       if (!rows.length){
@@ -988,13 +1210,193 @@
       row.className = 'bar-row';
       row.innerHTML = '<span class="label">'+c.canal+'</span><span class="num" style="font-family:\'IBM Plex Mono\',monospace;">'+fmtCLP(c.venta)+'</span>' +
         '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+(i===0?accent:'var(--text-muted)')+'"></div></div>' +
-        '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtLitros(c.litros)+'</span></div>';
+        '<div class="bar-meta"><span>'+pct.toFixed(1)+'% del total</span><span>'+fmtC9L(c.c9l)+'</span></div>';
       el.appendChild(row);
     });
     if (!list.length){
       el.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px;">Sin datos suficientes.</p>';
     }
   }
+
+  // ---------- SKU x Canal ----------
+  function getSkuCanal(brand){
+    if (!DATA.sku_canal) return [];
+    if (brand === 'AMBAS'){
+      return ['STOLICHNAYA','BUHERO NEGRO'].reduce(function(acc,m){ return acc.concat(DATA.sku_canal[m]||[]); }, []);
+    }
+    return DATA.sku_canal[brand] || [];
+  }
+
+  function buildMonthPicker(){
+    var el = document.getElementById('skuMonthPicker');
+    el.innerHTML = '';
+    var allBtn = document.createElement('button');
+    allBtn.className = 'month-chip all';
+    allBtn.textContent = 'Todo el año';
+    allBtn.onclick = function(){
+      state.skuMonths = [1,2,3,4,5,6,7,8,9,10,11,12];
+      syncMonthPicker(); renderSkuCanal(BRAND_META[state.brand]);
+    };
+    el.appendChild(allBtn);
+    DATA.meses.forEach(function(m, i){
+      var btn = document.createElement('button');
+      btn.className = 'month-chip';
+      btn.textContent = m.slice(0,3);
+      btn.dataset.mes = i+1;
+      btn.onclick = function(){
+        var mes = i+1;
+        var idx = state.skuMonths.indexOf(mes);
+        if (idx>=0){ if (state.skuMonths.length>1) state.skuMonths.splice(idx,1); }
+        else { state.skuMonths.push(mes); }
+        syncMonthPicker(); renderSkuCanal(BRAND_META[state.brand]);
+      };
+      el.appendChild(btn);
+    });
+    syncMonthPicker();
+  }
+  function syncMonthPicker(){
+    var el = document.getElementById('skuMonthPicker');
+    Array.prototype.forEach.call(el.querySelectorAll('.month-chip:not(.all)'), function(btn){
+      btn.className = 'month-chip' + (state.skuMonths.indexOf(+btn.dataset.mes)>=0 ? ' active' : '');
+    });
+  }
+
+  function renderSkuCanal(meta){
+    var rows = getSkuCanal(state.brand);
+    var months = state.skuMonths;
+    var curYear = 2026, prevYear = 2025;
+    var cur = rows.filter(function(r){ return r.anio===curYear && months.indexOf(r.mes)>=0; });
+    var prev = rows.filter(function(r){ return r.anio===prevYear && months.indexOf(r.mes)>=0; });
+
+    function agg(list){
+      var map = {};
+      list.forEach(function(r){
+        var k = r.producto + '|' + r.canal;
+        if (!map[k]) map[k] = {producto:r.producto, glosa:r.glosa, canal:r.canal, venta:0, c9l:0};
+        map[k].venta += r.venta; map[k].c9l += r.c9l;
+      });
+      return map;
+    }
+    var curMap = agg(cur), prevMap = agg(prev);
+    var keys = Object.keys(curMap);
+    Object.keys(prevMap).forEach(function(k){ if (keys.indexOf(k)<0) keys.push(k); });
+
+    var list = keys.map(function(k){
+      var c = curMap[k] || {producto:prevMap[k].producto, glosa:prevMap[k].glosa, canal:prevMap[k].canal, venta:0, c9l:0};
+      var p = prevMap[k] || {venta:0, c9l:0};
+      var varPct = p.venta ? (c.venta-p.venta)/p.venta*100 : (c.venta>0 ? null : 0);
+      return {producto:c.producto, glosa:c.glosa, canal:c.canal, venta:c.venta, c9l:c.c9l, ventaPrev:p.venta, varPct:varPct};
+    }).filter(function(r){ return r.venta>0 || r.ventaPrev>0; });
+    list.sort(function(a,b){ return b.venta-a.venta; });
+
+    var monthLabel = months.length===12 ? 'todo el año' : months.slice().sort(function(a,b){return a-b;}).map(function(m){return DATA.meses[m-1].slice(0,3);}).join(', ');
+    document.getElementById('skuCanalSub').textContent = 'Mostrando ' + monthLabel + ' ' + curYear + ' vs mismo período ' + prevYear;
+
+    var table = document.getElementById('skuCanalTable');
+    if (!list.length){
+      table.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Sin datos para el período seleccionado.</td></tr></tbody>';
+      return;
+    }
+    var html = '<thead><tr><th>Producto</th><th>Canal</th><th class="num">Venta '+curYear+'</th><th class="num">Venta '+prevYear+'</th><th class="num">Var. %</th><th class="num">C9L '+curYear+'</th></tr></thead><tbody>';
+    list.forEach(function(r){
+      var cls = r.varPct===null ? '' : (r.varPct>=0 ? 'chip up' : 'chip down');
+      var varTxt = r.varPct===null ? (r.venta>0?'Nuevo':'—') : fmtPct(r.varPct);
+      html += '<tr><td class="name">'+(r.glosa||r.producto)+'<span class="prod-code">'+r.producto+'</span></td>' +
+        '<td><span class="canal-tag">'+r.canal+'</span></td>' +
+        '<td class="num">'+fmtCLP(r.venta)+'</td>' +
+        '<td class="num">'+fmtCLP(r.ventaPrev)+'</td>' +
+        '<td class="num">'+(cls?('<span class="'+cls+'" style="padding:2px 8px;">'+varTxt+'</span>'):varTxt)+'</td>' +
+        '<td class="num">'+fmtC9L(r.c9l)+'</td></tr>';
+    });
+    html += '</tbody>';
+    table.innerHTML = html;
+  }
+
+  // ---------- Clientes caídos ----------
+  function buildClientesControls(){
+    var sel = document.getElementById('clientesMonthSelect');
+    sel.innerHTML = '';
+    DATA.meses.forEach(function(m,i){
+      var opt = document.createElement('option');
+      opt.value = i+1; opt.textContent = m;
+      if (i+1 === state.clientesMonth) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function(){ state.clientesMonth = +sel.value; renderClientes(BRAND_META[state.brand]); });
+    document.getElementById('clientesCanalSelect').addEventListener('change', function(e){
+      state.clientesCanal = e.target.value; renderClientes(BRAND_META[state.brand]);
+    });
+  }
+
+  function getClientesMensual(brand){
+    if (!DATA.clientes_mensual) return [];
+    if (brand === 'AMBAS'){
+      return ['STOLICHNAYA','BUHERO NEGRO'].reduce(function(acc,m){ return acc.concat(DATA.clientes_mensual[m]||[]); }, []);
+    }
+    return DATA.clientes_mensual[brand] || [];
+  }
+
+  function renderClientes(meta){
+    var mes = state.clientesMonth;
+    var canalFilter = state.clientesCanal;
+    var rows = getClientesMensual(state.brand).filter(function(r){
+      return r.mes===mes && (canalFilter==='TODOS' || r.canal===canalFilter);
+    });
+    var map = {};
+    rows.forEach(function(r){
+      if (!map[r.cliente_id]) map[r.cliente_id] = {v25:0, v26:0, canales:{}};
+      if (r.anio===2025) map[r.cliente_id].v25 += r.venta;
+      if (r.anio===2026) map[r.cliente_id].v26 += r.venta;
+      map[r.cliente_id].canales[r.canal] = true;
+    });
+    var mesNombre = DATA.meses[mes-1];
+    document.getElementById('clientesSub').textContent = 'Clientes que compraron menos (o dejaron de comprar) en '+mesNombre+' 2026 vs '+mesNombre+' 2025';
+
+    var list = Object.keys(map).map(function(cid){
+      var v = map[cid];
+      var drop = v.v25 - v.v26;
+      var canales = Object.keys(v.canales);
+      return {
+        cliente_id: cid,
+        nombre: (DATA.clientes_nombres && DATA.clientes_nombres[cid]) || cid,
+        v25: v.v25, v26: v.v26, drop: drop,
+        pct: v.v25 ? (drop/v.v25*100) : null,
+        canal: canales.length>1 ? 'Varios' : (canales[0]||'—')
+      };
+    }).filter(function(r){ return r.v25>0 && r.drop>0; });
+    list.sort(function(a,b){ return b.drop-a.drop; });
+    var top = list.slice(0,15);
+
+    var table = document.getElementById('clientesTable');
+    var totalV25 = Object.keys(map).reduce(function(a,cid){return a+map[cid].v25;},0);
+    if (!totalV25){
+      table.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Sin datos de '+mesNombre+' 2025 para esta marca — no hay base de comparación.</td></tr></tbody>';
+      return;
+    }
+    if (!top.length){
+      table.innerHTML = '<tbody><tr><td style="color:var(--text-muted);padding:8px 0;">Ningún cliente con caída de venta en el período seleccionado.</td></tr></tbody>';
+      return;
+    }
+    var html = '<thead><tr><th>Cliente</th><th>Canal</th><th class="num">Venta '+mesNombre+' 2025</th><th class="num">Venta '+mesNombre+' 2026</th><th class="num">Caída</th></tr></thead><tbody>';
+    top.forEach(function(r, i){
+      html += '<tr><td class="name"><span class="rank-badge">'+(i+1)+'</span>'+r.nombre+'</td>' +
+        '<td><span class="canal-tag">'+r.canal+'</span></td>' +
+        '<td class="num">'+fmtCLP(r.v25)+'</td>' +
+        '<td class="num">'+fmtCLP(r.v26)+'</td>' +
+        '<td class="num drop-cell">-'+fmtCLP(r.drop)+' ('+r.pct.toFixed(0)+'%)</td></tr>';
+    });
+    html += '</tbody>';
+    table.innerHTML = html;
+  }
+
+  // unit toggle (Venta / C9L) for the monthly trend chart
+  document.getElementById('unitToggle').addEventListener('click', function(e){
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    state.unit = btn.dataset.unit;
+    markActive(document.getElementById('unitToggle'), 'unit', state.unit);
+    renderTrend(getMonthly(state.brand), BRAND_META[state.brand]);
+  });
 
   // region toggle
   document.getElementById('regionToggle').addEventListener('click', function(e){
@@ -1013,6 +1415,4 @@
   });
 })();
 </script>
-
-</body>
-</html>
+</body></html>
